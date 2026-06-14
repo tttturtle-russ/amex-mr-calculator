@@ -75,14 +75,6 @@
   .card h2 .n{font-family:var(--mono); font-size:12px; color:var(--aqua); border:1px solid var(--aqua-dim); border-radius:7px;
     width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; background:rgba(127,202,187,.05)}
 
-  details.notice{border:1px solid var(--border); border-left:2px solid var(--aqua); background:rgba(127,202,187,.035);
-    border-radius:10px; margin-bottom:18px}
-  details.notice summary{padding:13px 16px; cursor:pointer; font-weight:600; color:var(--aqua-bright); list-style:none;
-    font-size:13.5px; display:flex; align-items:center; gap:8px}
-  details.notice summary::-webkit-details-marker{display:none}
-  details.notice summary::before{content:"⌖"; font-family:var(--mono); color:var(--aqua)}
-  details.notice .body{padding:0 16px 15px; font-size:13.5px; color:var(--ink-dim)}
-  details.notice .body b{color:var(--aqua-bright); font-weight:600}
   details.sub{border:1px solid var(--border-soft); background:rgba(255,255,255,.015); border-radius:10px; margin-top:10px}
   details.sub summary{padding:12px 15px; cursor:pointer; font-weight:600; color:var(--ink-dim); font-size:13px; list-style:none}
   details.sub summary::-webkit-details-marker{display:none}
@@ -118,8 +110,6 @@
   .big{font-family:var(--mono); font-weight:700; font-size:clamp(28px,6.4vw,44px); color:var(--aqua-bright); letter-spacing:-.01em;
     line-height:1.05; margin:4px 0; text-shadow:0 0 28px rgba(127,202,187,.28)}
   .hl-sub{font-size:12.5px; color:var(--muted); font-family:var(--mono)}
-  .hl-note{font-size:12px; color:var(--muted); margin-top:12px; padding-top:12px; border-top:1px dashed var(--border)}
-  .hl-note b{color:var(--aqua-dim)}
   .up{color:var(--up); font-weight:700; font-family:var(--mono)} .down{color:var(--down); font-weight:700; font-family:var(--mono)}
 
   .filterbar{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px}
@@ -171,20 +161,10 @@
   <header class="top reveal" style="--d:.02s">
     <div class="eyebrow">Membership Rewards · 跨区里程终端</div>
     <h1>Amex MR <span class="ac">里程换算计算器</span></h1>
-    <p class="sub">输入发卡地区与 MR 数量，看这笔分在各区能兑换的<b style="color:var(--ink)">里程数量</b>，以及跨区 GT（Global Transfer）<b style="color:var(--ink)">前后</b>的差异。</p>
+    <p class="sub">各区可兑里程 · GT（Global Transfer）前后对比 · 实时汇率折算</p>
     <div class="rule"></div>
     <span class="stamp">数据核对 · 2026-06</span>
   </header>
-
-  <details class="notice reveal" open style="--d:.06s">
-    <summary>怎么算的 / 跨区 GT 说明（建议先读）</summary>
-    <div class="body">
-      <b>只算里程，不折钱。</b>你这笔 MR：要么在本区直接兑换（<b>GT 前</b>），要么用 Amex 官方
-      <b>Global Card Transfer（“Moving Abroad”，电话办、约一年一次、几周到账）</b>GT 到另一区再兑换（<b>GT 后</b>）。
-      GT 按<b>两地货币的实时汇率</b>折算 MR 数量，再乘该区兑换比例得到里程。<br><br>
-      <b>重要：Amex 未公开跨区换算的官方公式</b>，GT 换算为<b>估算</b>（仅据零散实测，如「美国→加拿大实测平 1:1」，但「英国→澳洲」又曾 +50%，并不一致）。可在「跨区换算假设」切换模型。<b>跨区(GT 后)一律为估算、须致电 Amex 确认</b>；本区直兑(GT 前) 100% 真实。手续费（如 HK$400/次）为现金费、不抵扣里程，仅以标签提示。
-    </div>
-  </details>
 
   <!-- 输入 -->
   <section class="card reveal" style="--d:.10s">
@@ -245,7 +225,7 @@
     </details>
   </section>
 
-  <footer>仅供参考 · 非财务建议 · 里程数量为按当前比例换算 · 比例汇率与跨区规则随时变动 · 使用前请向 American Express 核实</footer>
+  <footer>仅供参考 · 数据随时变动，以 American Express 为准</footer>
 </div>
 
 <script>
@@ -454,7 +434,7 @@ function renderHeadline(routes, homeRoute, best){
       + `<div class="big" id="heroVal">${nf(best.miles)} 里程</div>`
       + `<div class="hl-sub">GT 到 ${rn(best.rk)}：${nf(best.mr)} MR（保留 ${(best.keep*100).toFixed(best.keep<0.1?2:0)}%）→ ${nf(best.miles)} 里程 · 本区 GT 前 ${nf(homeRoute.miles)} 里程</div>`;
   }
-  $("headline").innerHTML = line + `<div class="hl-note">跨区(GT 后)需 Global Card Transfer（电话办、约一年一次），换算为<b>估算</b>、非 Amex 官方公式，须电话确认。当前假设：${state.convModel==="cap"?"保守·上限 1:1":"纯实时汇率·理论值"}。</div>`;
+  $("headline").innerHTML = line;
   animateHero(best.miles);
 }
 
