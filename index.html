@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amex MR · 跨区里程终端</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e1018; --panel:rgba(22,26,37,.72); --panel-solid:#141826;
+    --border:#282f42; --border-soft:#1d2334; --field:#10131e;
+    --ink:#ece9e1; --ink-dim:#b3b8c6; --muted:#767e92;
+    --aqua:#7fcabb; --aqua-bright:#a4e6d6; --aqua-dim:#5d8c83;
+    --coral:#e8987a; --coral-bright:#f4b89c; --coral-dim:#a96b54;
+    --up:#7fcabb; --down:#e0726b; --warn:#cfa15f;
+    --shadow:0 24px 60px -26px rgba(0,0,0,.78);
+    --mono:'Space Mono',ui-monospace,Menlo,monospace;
+    --serif:'Fraunces','Songti SC','Noto Serif CJK SC',Georgia,serif;
+    --cjk:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; min-height:100vh; color:var(--ink); font-family:var(--cjk); font-size:15px; line-height:1.6;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background:
+      radial-gradient(940px 520px at 8% -10%, rgba(127,202,187,.12), transparent 60%),
+      radial-gradient(820px 600px at 102% -6%, rgba(232,152,122,.10), transparent 55%),
+      linear-gradient(180deg,#0e1018,#0d0f17 55%,#0a0c12);
+    background-attachment:fixed;
+  }
+  body::before{content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+    background-size:48px 48px; mask:radial-gradient(circle at 50% 14%,#000,transparent 78%)}
+  body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.04; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .wrap{position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:38px 20px 72px}
+
+  @keyframes rise{from{opacity:0; transform:translateY(16px)} to{opacity:1; transform:none}}
+  .reveal{animation:rise .7s cubic-bezier(.2,.8,.2,1) both; animation-delay:var(--d,0s)}
+  @media (prefers-reduced-motion:reduce){.reveal{animation:none}}
+
+  header.top{margin-bottom:26px}
+  .eyebrow{font-family:var(--mono); text-transform:uppercase; letter-spacing:.26em; font-size:11px; color:var(--aqua);
+    display:flex; align-items:center; gap:12px; margin-bottom:14px}
+  .eyebrow::before{content:""; width:34px; height:1px; background:linear-gradient(90deg,var(--aqua),transparent)}
+  h1{font-family:var(--serif); font-weight:600; font-size:clamp(30px,6vw,52px); line-height:1.02; letter-spacing:-.01em; margin:0; color:#f4f1e9}
+  h1 .ac{color:var(--aqua)}
+  .sub{color:var(--ink-dim); font-size:14.5px; max-width:64ch; margin:14px 0 0}
+  .rule{height:1px; margin-top:20px; background:linear-gradient(90deg,rgba(127,202,187,.5),rgba(232,152,122,.22) 38%,transparent)}
+  .stamp{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--aqua-dim); border:1px solid var(--border);
+    padding:3px 10px; border-radius:999px; display:inline-block; margin-top:16px; background:rgba(127,202,187,.04)}
+
+  .card{position:relative; background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:22px;
+    margin-bottom:18px; box-shadow:var(--shadow); backdrop-filter:blur(8px)}
+  .card::before{content:""; position:absolute; inset:0 0 auto 0; height:1px; border-radius:16px 16px 0 0;
+    background:linear-gradient(90deg,transparent,rgba(127,202,187,.5),transparent)}
+  .card h2{font-family:var(--serif); font-weight:600; font-size:19px; margin:0 0 18px; display:flex; align-items:center; gap:11px; color:#f1eee6}
+  .card h2 .n{font-family:var(--mono); font-size:12px; color:var(--aqua); border:1px solid var(--aqua-dim); border-radius:7px;
+    width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; background:rgba(127,202,187,.05)}
+
+  details.notice{border:1px solid var(--border); border-left:2px solid var(--aqua); background:rgba(127,202,187,.035);
+    border-radius:10px; margin-bottom:18px}
+  details.notice summary{padding:13px 16px; cursor:pointer; font-weight:600; color:var(--aqua-bright); list-style:none;
+    font-size:13.5px; display:flex; align-items:center; gap:8px}
+  details.notice summary::-webkit-details-marker{display:none}
+  details.notice summary::before{content:"⌖"; font-family:var(--mono); color:var(--aqua)}
+  details.notice .body{padding:0 16px 15px; font-size:13.5px; color:var(--ink-dim)}
+  details.notice .body b{color:var(--aqua-bright); font-weight:600}
+  details.sub{border:1px solid var(--border-soft); background:rgba(255,255,255,.015); border-radius:10px; margin-top:10px}
+  details.sub summary{padding:12px 15px; cursor:pointer; font-weight:600; color:var(--ink-dim); font-size:13px; list-style:none}
+  details.sub summary::-webkit-details-marker{display:none}
+  details.sub summary::before{content:"▸ "; color:var(--aqua-dim)}
+  details.sub[open] summary::before{content:"▾ "}
+  details.sub .body{padding:0 15px 14px}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:16px}
+  label.fld{display:flex; flex-direction:column; gap:7px; font-size:12px; font-weight:600; color:var(--aqua-dim); letter-spacing:.05em}
+  select,input[type=number]{font:inherit; font-size:14px; color:var(--ink); background:var(--field); border:1px solid var(--border);
+    border-radius:11px; padding:11px 12px; width:100%; transition:border-color .15s, box-shadow .15s; appearance:none}
+  select{background-image:linear-gradient(45deg,transparent 50%,var(--aqua-dim) 50%),linear-gradient(135deg,var(--aqua-dim) 50%,transparent 50%);
+    background-position:calc(100% - 18px) center,calc(100% - 13px) center; background-size:5px 5px,5px 5px; background-repeat:no-repeat; padding-right:34px}
+  input[type=number]{font-family:var(--mono); letter-spacing:.02em}
+  select:focus,input:focus{outline:none; border-color:var(--aqua); box-shadow:0 0 0 3px rgba(127,202,187,.16)}
+  option{background:var(--panel-solid); color:var(--ink)}
+
+  .fxbar{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:16px; font-family:var(--mono); font-size:12px; color:var(--ink-dim)}
+  .dot{width:8px; height:8px; border-radius:50%; display:inline-block; box-shadow:0 0 9px currentColor}
+  .dot.live{background:var(--aqua); color:var(--aqua)} .dot.offline{background:var(--down); color:var(--down)}
+  .dot.loading{background:var(--coral); color:var(--coral); animation:pulse 1.1s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.35}}
+  button.mini{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; padding:6px 13px;
+    border:1px solid var(--border); background:transparent; border-radius:8px; cursor:pointer; color:var(--aqua); transition:.15s}
+  button.mini:hover{border-color:var(--aqua); background:rgba(127,202,187,.08)}
+  .rnote{font-size:12.5px; color:var(--muted); margin-top:13px; line-height:1.55}
+
+  .headline{position:relative; overflow:hidden; border:1px solid var(--border); border-radius:14px; padding:22px 24px; margin-bottom:20px;
+    background:radial-gradient(120% 140% at 0% 0%,rgba(127,202,187,.12),transparent 55%),linear-gradient(180deg,rgba(22,26,37,.9),rgba(14,17,24,.9))}
+  .hl-eyebrow{font-family:var(--mono); text-transform:uppercase; letter-spacing:.2em; font-size:10.5px; color:var(--aqua)}
+  .hl-main{font-size:15px; color:var(--ink-dim); margin:9px 0 4px}
+  .hl-main b{color:var(--ink); font-weight:600}
+  .big{font-family:var(--mono); font-weight:700; font-size:clamp(28px,6.4vw,44px); color:var(--aqua-bright); letter-spacing:-.01em;
+    line-height:1.05; margin:4px 0; text-shadow:0 0 28px rgba(127,202,187,.28)}
+  .hl-sub{font-size:12.5px; color:var(--muted); font-family:var(--mono)}
+  .hl-note{font-size:12px; color:var(--muted); margin-top:12px; padding-top:12px; border-top:1px dashed var(--border)}
+  .hl-note b{color:var(--aqua-dim)}
+  .up{color:var(--up); font-weight:700; font-family:var(--mono)} .down{color:var(--down); font-weight:700; font-family:var(--mono)}
+
+  .filterbar{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px}
+  .filterbar label.fld{font-size:11px}
+  .filterbar select{width:auto; min-width:170px; font-size:13px}
+
+  .tbl-scroll{overflow:auto; max-height:560px; border:1px solid var(--border); border-radius:12px; background:rgba(12,14,22,.5)}
+  .tbl-scroll::-webkit-scrollbar{width:10px; height:10px}
+  .tbl-scroll::-webkit-scrollbar-thumb{background:#2a3145; border-radius:8px; border:2px solid transparent; background-clip:padding-box}
+  .tbl-scroll::-webkit-scrollbar-thumb:hover{background:var(--aqua-dim)}
+  table{width:100%; border-collapse:collapse; font-size:13.5px}
+  th,td{padding:11px 13px; text-align:right; border-bottom:1px solid var(--border-soft); white-space:nowrap}
+  th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+  thead th{position:sticky; top:0; z-index:2; background:#121624; color:var(--aqua-dim); font-family:var(--mono);
+    font-weight:400; text-transform:uppercase; letter-spacing:.1em; font-size:10.5px; border-bottom:1px solid var(--border)}
+  tbody td{font-family:var(--mono); color:var(--ink-dim)}
+  tbody td:nth-child(2){font-family:var(--cjk)}
+  tbody tr{transition:background .12s}
+  tbody tr.clk{cursor:pointer}
+  tbody tr:hover{background:rgba(127,202,187,.05)}
+  tbody td b{color:var(--ink); font-weight:700}
+  tr.best{background:rgba(232,152,122,.10)!important}
+  tr.best td{border-bottom-color:rgba(232,152,122,.22)}
+  tr.best td:first-child{box-shadow:inset 3px 0 0 var(--coral)}
+  tr.best td b{color:var(--coral-bright)}
+  tr.divider td{background:#10131e; color:var(--muted); font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-align:left; text-transform:uppercase}
+  .code{font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.05em; color:var(--aqua);
+    border:1px solid var(--border); border-radius:5px; padding:1px 6px; margin-right:8px; background:rgba(127,202,187,.05)}
+  .tag{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em; padding:1px 7px;
+    border-radius:5px; margin-left:7px; vertical-align:middle; text-transform:uppercase}
+  .tag.best{background:var(--coral); color:#26120a}
+  .tag.home{background:transparent; color:var(--aqua); border:1px solid rgba(127,202,187,.4)}
+  .tag.warn{background:rgba(207,161,95,.14); color:var(--warn); border:1px solid rgba(207,161,95,.3)}
+  .tag.theo{background:rgba(224,114,107,.14); color:var(--down); border:1px solid rgba(224,114,107,.35)}
+  .tag.hotel{background:rgba(255,255,255,.05); color:var(--muted)}
+  .muted{color:var(--muted)} .small{font-size:12px}
+  .countnote{font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-top:10px; letter-spacing:.02em}
+  .secttl{font-size:13px; font-weight:600; color:var(--ink-dim); margin:22px 0 12px; display:flex; align-items:center; gap:9px}
+  .secttl::before{content:""; width:14px; height:1px; background:var(--coral)}
+
+  .pgrid{display:grid; grid-template-columns:1fr auto; gap:8px 16px; align-items:center; font-size:13px; color:var(--ink-dim)}
+  .pgrid input{width:92px; text-align:right; padding:6px 9px; font-size:13px}
+  .src{font-size:12.5px; color:var(--muted)} .src b{color:var(--ink-dim)}
+  footer{font-family:var(--mono); color:var(--muted); font-size:11px; letter-spacing:.04em; margin-top:14px; text-align:center; line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top reveal" style="--d:.02s">
+    <div class="eyebrow">Membership Rewards · 跨区里程终端</div>
+    <h1>Amex MR <span class="ac">里程换算计算器</span></h1>
+    <p class="sub">输入发卡地区与 MR 数量，看这笔分在各区能兑换的<b style="color:var(--ink)">里程数量</b>，以及跨区 GT（Global Transfer）<b style="color:var(--ink)">前后</b>的差异。</p>
+    <div class="rule"></div>
+    <span class="stamp">数据核对 · 2026-06</span>
+  </header>
+
+  <details class="notice reveal" open style="--d:.06s">
+    <summary>怎么算的 / 跨区 GT 说明（建议先读）</summary>
+    <div class="body">
+      <b>只算里程，不折钱。</b>你这笔 MR：要么在本区直接兑换（<b>GT 前</b>），要么用 Amex 官方
+      <b>Global Card Transfer（“Moving Abroad”，电话办、约一年一次、几周到账）</b>GT 到另一区再兑换（<b>GT 后</b>）。
+      GT 按<b>两地货币的实时汇率</b>折算 MR 数量，再乘该区兑换比例得到里程。<br><br>
+      <b>重要：Amex 未公开跨区换算的官方公式</b>，GT 换算为<b>估算</b>（仅据零散实测，如「美国→加拿大实测平 1:1」，但「英国→澳洲」又曾 +50%，并不一致）。可在「跨区换算假设」切换模型。<b>跨区(GT 后)一律为估算、须致电 Amex 确认</b>；本区直兑(GT 前) 100% 真实。手续费（如 HK$400/次）为现金费、不抵扣里程，仅以标签提示。
+    </div>
+  </details>
+
+  <!-- 输入 -->
+  <section class="card reveal" style="--d:.10s">
+    <h2><span class="n">1</span>你的积分</h2>
+    <div class="grid">
+      <label class="fld">· 发卡地区<select id="region"></select></label>
+      <label class="fld" id="tierWrap" style="display:none">· 卡片等级<select id="tier"></select></label>
+      <label class="fld">· MR 积分数量<input id="amount" type="number" min="0" step="1000" value="100000"></label>
+    </div>
+    <div class="fxbar">
+      <span><span id="fxDot" class="dot loading"></span> <span id="fxStatus">正在获取实时汇率…</span></span>
+      <button class="mini" id="fxRefresh">刷新汇率</button>
+      <span class="muted small">实时汇率用于 GT 折算</span>
+    </div>
+    <div id="regionNote" class="rnote"></div>
+  </section>
+
+  <!-- GT 前后对比 -->
+  <section class="card reveal" style="--d:.14s">
+    <h2><span class="n">2</span>GT 前后 · 里程对比</h2>
+    <div class="filterbar">
+      <label class="fld">· 目标里程计划<select id="program"></select></label>
+      <label class="fld">· 跨区换算假设<select id="convModel">
+        <option value="cap">保守·上限1:1（估算）</option>
+        <option value="fx">纯实时汇率（理论值）</option>
+      </select></label>
+    </div>
+    <div id="headline" class="headline"></div>
+    <div class="secttl">该计划在各区可兑里程（本区=GT前基准，他区=GT后）</div>
+    <div class="tbl-scroll">
+      <table id="focusTable"><thead><tr>
+        <th>目的地</th><th>GT 保留</th><th>GT 后 MR</th><th>可兑里程</th><th>较本区(GT前)</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+    <div class="countnote" id="focusNote"></div>
+
+    <div class="secttl">全部里程计划总览 · 本区(GT前) vs 最佳区(GT后)　<span class="muted small" style="font-weight:400; letter-spacing:0">点任意行切换上方计划</span></div>
+    <div class="tbl-scroll">
+      <table id="overviewTable"><thead><tr>
+        <th>里程计划</th><th>本区 GT前</th><th>最佳区 GT后</th><th>提升</th><th>最佳区</th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+
+  <!-- 数据 -->
+  <section class="card reveal" style="--d:.18s">
+    <h2><span class="n">3</span>数据与假设 · 可编辑</h2>
+    <details class="sub">
+      <summary>汇率（1 USD = ? 当地）— 驱动「GT 折算」，可手动覆盖</summary>
+      <div class="body">
+        <div class="small muted" style="margin-bottom:10px">默认联网获取实时汇率；失败则用内置值。手动改某格即覆盖该币种。</div>
+        <div id="fxGrid" class="pgrid"></div>
+      </div>
+    </details>
+    <details class="sub">
+      <summary>数据来源与提醒</summary>
+      <div class="body src" id="sources"></div>
+    </details>
+  </section>
+
+  <footer>仅供参考 · 非财务建议 · 里程数量为按当前比例换算 · 比例汇率与跨区规则随时变动 · 使用前请向 American Express 核实</footer>
+</div>
+
+<script>
+/* ============================================================
+   数据（核对于 2026年6月）
+   ratio = 每 1 MR 分可兑里程/积分
+   SG/AU 分卡等级：值可为 {charge, standard}；null = 该等级不支持
+   ============================================================ */
+const DATA = {
+  partners:{
+    asiamiles:{name:"国泰 Asia Miles",type:"air"}, krisflyer:{name:"新航 KrisFlyer",type:"air"},
+    ba_avios:{name:"英航 Avios (BA Club)",type:"air"}, iberia_avios:{name:"Iberia Avios",type:"air"},
+    aerlingus_avios:{name:"Aer Lingus Avios",type:"air"}, qatar_avios:{name:"卡塔尔 Avios",type:"air"},
+    aeroplan:{name:"加航 Aeroplan",type:"air"}, ana:{name:"全日空 ANA",type:"air"},
+    flyingblue:{name:"法荷航 Flying Blue",type:"air"}, delta:{name:"达美 SkyMiles",type:"air"},
+    emirates:{name:"阿联酋 Skywards",type:"air"}, etihad:{name:"阿提哈德 Guest",type:"air"},
+    qantas:{name:"澳洲航空 Qantas",type:"air"}, virginatlantic:{name:"维珍大西洋 Flying Club",type:"air"},
+    velocity:{name:"维珍澳洲 Velocity",type:"air"}, lifemiles:{name:"Avianca LifeMiles",type:"air"},
+    jetblue:{name:"JetBlue TrueBlue",type:"air"}, aeromexico:{name:"墨西哥航空 Aeroméxico",type:"air"},
+    evaair:{name:"长荣 EVA Infinity",type:"air"}, malaysia:{name:"马航 Enrich",type:"air"},
+    thai:{name:"泰航 Royal Orchid Plus",type:"air"}, sas:{name:"北欧航空 EuroBonus",type:"air"},
+    marriott:{name:"万豪 Bonvoy",type:"hotel"}, hilton:{name:"希尔顿 Honors",type:"hotel"},
+    accor:{name:"雅高 ALL",type:"hotel"}, radisson:{name:"丽笙 Rewards",type:"hotel"},
+    choice:{name:"Choice Privileges",type:"hotel"},
+  },
+  currencies:{ USD:1, HKD:7.8, CNY:7.2, SGD:1.29, GBP:0.79, AUD:1.52, CAD:1.37, EUR:0.92, JPY:156, INR:86, TWD:32 },
+  currencyOf:{ HK:"HKD", US:"USD", UK:"GBP", SG:"SGD", AU:"AUD", CA:"CAD", JP:"JPY", IN:"INR", TW:"TWD" },
+
+  regions:{
+    HK:{ name:"香港 🇭🇰", fee:{perConv:"HK$400/次", air:true},
+      note:"航空统一 18,000 分 = 1,000 里程；每次航空兑换收 HK$400（Explorer/Centurion/公司卡豁免），Qantas 另加 HK$300。阿联酋暂停。",
+      transfers:{ asiamiles:0.05556, krisflyer:0.05556, ba_avios:0.05556, evaair:0.05556, qantas:0.05556, malaysia:0.05556, virginatlantic:0.05556, marriott:0.1111, hilton:0.15625 } },
+    US:{ name:"美国 🇺🇸",
+      note:"多数航空 1:1；国泰/阿联酋/JetBlue 0.8；Aeroméxico 1.6；希尔顿 1:2。达美/JetBlue 收联邦消费税。阿提哈德 2026/6/30 下线。",
+      transfers:{ asiamiles:0.80, krisflyer:1.0, ba_avios:1.0, iberia_avios:1.0, aerlingus_avios:1.0, qatar_avios:1.0, aeroplan:1.0, ana:1.0, flyingblue:1.0, delta:1.0, emirates:0.80, etihad:1.0, qantas:1.0, virginatlantic:1.0, lifemiles:1.0, jetblue:0.80, aeromexico:1.60, marriott:1.0, hilton:2.0, choice:1.0 } },
+    UK:{ name:"英国 🇬🇧",
+      note:"多数航空 1:1；新航 3:2(0.667)、阿联酋 2:1(0.5)。希尔顿 1:2、万豪 2:3、雅高 3:1、丽笙 1:3。阿提哈德 2026/6/22 下线。无转点费。",
+      transfers:{ ba_avios:1.0, iberia_avios:1.0, qatar_avios:1.0, virginatlantic:1.0, asiamiles:1.0, flyingblue:1.0, delta:1.0, qantas:1.0, sas:1.0, krisflyer:0.667, emirates:0.5, etihad:1.0, hilton:2.0, marriott:1.5, accor:0.333, radisson:3.0 } },
+    SG:{ name:"新加坡 🇸🇬", fee:{perConv:"S$20.38/次(Rewards卡)", air:true, waiveTier:"charge"},
+      note:"比例分卡等级（Platinum Charge/Centurion 最优）。2026/2/23 全线贬值。航空转点需年费约 S$40.74（Platinum 系列豁免）；Rewards 卡每次 S$20.38。",
+      tiers:{ list:["charge","standard"], labels:{charge:"Platinum Charge / Centurion", standard:"Platinum Reserve / 信用卡"}, default:"charge" },
+      transfers:{ krisflyer:{charge:0.5,standard:0.4545}, asiamiles:{charge:0.5,standard:0.4545}, ba_avios:{charge:0.5,standard:0.4545}, qantas:{charge:0.5,standard:0.4545}, evaair:{charge:0.5,standard:0.4545}, malaysia:{charge:0.5,standard:0.4545}, thai:{charge:0.5,standard:0.4545}, emirates:{charge:0.4167,standard:0.3846}, marriott:1.0, hilton:1.25 } },
+    AU:{ name:"澳大利亚 🇦🇺",
+      note:"多数 3:1；Velocity/Qantas 2:1(0.5)、阿联酋 4:1(0.25)。Qantas 仅 Platinum Charge/Centurion。2025/12/15 大幅贬值，泰航移除。",
+      tiers:{ list:["charge","standard"], labels:{charge:"Platinum Charge / Centurion", standard:"其他 MR 卡"}, default:"charge" },
+      transfers:{ velocity:0.5, krisflyer:0.333, qantas:{charge:0.5,standard:null}, asiamiles:0.333, ba_avios:0.333, emirates:0.25, etihad:0.333, qatar_avios:0.333, malaysia:0.333, virginatlantic:0.333 } },
+    CA:{ name:"加拿大 🇨🇦",
+      note:"多数 1:1；法荷航 2026/1 升回 1:1。国泰/达美/阿提哈德 4:3(0.75)。万豪 5:6(1.2)。旧卡 “MR Select” 不能转航空。",
+      transfers:{ aeroplan:1.0, flyingblue:1.0, ba_avios:1.0, asiamiles:0.75, delta:0.75, etihad:0.75, marriott:1.2, hilton:1.0 } },
+    JP:{ name:"日本 🇯🇵", fee:{perConv:"年费¥5,500", air:true}, cap:{partner:"ana",maxMiles:40000},
+      note:"主力 ANA 1:1，但需加入「MR ANA 程序」年费 ¥5,500，且每自然年封顶 40,000 ANA 里程。JAL 非伙伴。",
+      transfers:{ ana:1.0 } },
+    IN:{ name:"印度 🇮🇳",
+      note:"航空多为 2:1(0.5)，万豪 1:1（常有 30–50% 转点奖励）。印度卡核心价值多在里程券模式。",
+      transfers:{ krisflyer:0.5, emirates:0.5, etihad:0.5, ba_avios:0.5, qatar_avios:0.5, asiamiles:0.5, virginatlantic:0.5, marriott:1.0 } },
+    TW:{ name:"台湾 🇹🇼",
+      note:"多数航空 1:1；国泰 2026/3/1 贬为 5:4(0.8)。万豪 10:9(0.9)、希尔顿 4:5(1.25)。转点约需 2–3 周。",
+      transfers:{ asiamiles:0.8, krisflyer:1.0, evaair:1.0, thai:1.0, malaysia:1.0, marriott:0.9, hilton:1.25 } },
+  },
+  sources:[
+    ["跨区 Global Card Transfer（电话办、约一年一次、按汇率折算）","pointhacks.com.au / princeoftravel.com / americanexpress.com 各区 Moving Abroad 页"],
+    ["US 转点伙伴与 2026/3 国泰贬值","upgradedpoints.com、frequentmiler.com、Amex 官方伙伴页"],
+    ["HK 18,000:1,000 与 HK$400 手续费","americanexpress.com.hk 各伙伴页"],
+    ["UK/SG 比例与 2026 早期贬值","headforpoints.com、milelion.com、mainlymiles.com、Amex 官方页"],
+    ["AU/CA/JP/IN/TW 比例","pointhacks.com.au、frugalflyer.ca、ana.co.jp、cardtrail.in、jazztalk.tw"],
+    ["实时汇率 API","open.er-api.com（免费、无需密钥）"],
+  ],
+};
+
+/* ============================== 状态 ============================== */
+const state = {
+  region:"HK", tier:"charge", amount:100000, program:"asiamiles", convModel:"cap",
+  fxOverride:{}, fxLive:{}, fxStatus:"loading", fxUpdated:"",
+};
+
+/* ============================== 工具 ============================== */
+const $ = id => document.getElementById(id);
+const rate = c => state.fxOverride[c] ?? state.fxLive[c] ?? DATA.currencies[c];   // 1 USD = ? 当地
+const curOf = rk => DATA.currencyOf[rk];
+const ratioOf = (e,t)=> e==null?null : (typeof e==="number"? e : (e[t]??null));
+const defTier = rk => DATA.regions[rk].tiers ? DATA.regions[rk].tiers.default : null;
+const stripFlag = s => s.replace(/\s*[\u{1F1E6}-\u{1F1FF}]{2}/u,'').trim();
+const rn = rk => stripFlag(DATA.regions[rk].name);
+const nf = (n,d=0)=> new Intl.NumberFormat("en-US",{maximumFractionDigits:d,minimumFractionDigits:d}).format(n);
+
+// GT 保留比例：从 home GT 到 to，按两地货币实时汇率折算 MR（Amex 未公开公式，估算）
+function retain(homeRk,toRk){
+  const r = rate(curOf(toRk)) / rate(curOf(homeRk));
+  return state.convModel==="cap" ? Math.min(1, r) : r;   // 保守：GT 向弱货币不超过 1:1
+}
+function capMiles(rk,pk,miles){
+  const c=DATA.regions[rk].cap;
+  if(c && c.partner===pk && miles>c.maxMiles) return {miles:c.maxMiles, capped:true};
+  return {miles, capped:false};
+}
+// 该区是否对该计划收费 → 返回标签文字（仅提示，不抵扣里程）
+function feeTag(rk,pk,tier){
+  const r=DATA.regions[rk], p=DATA.partners[pk]; if(!r.fee) return "";
+  if(r.fee.air && p.type!=="air") return "";
+  if(r.fee.waiveTier && tier===r.fee.waiveTier) return "";
+  return r.fee.perConv;
+}
+
+// 给定计划，算每个区可兑里程（本区=GT前；他区=GT后，按 retain 折算）
+function programRoutes(pk){
+  const home=state.region, out=[];
+  for(const rk in DATA.regions){
+    const isHome = rk===home;
+    const tier = isHome ? state.tier : defTier(rk);
+    const ratio = ratioOf(DATA.regions[rk].transfers[pk], tier);
+    if(ratio==null) continue;
+    const keep = isHome ? 1 : retain(home,rk);
+    const mr = state.amount*keep;                       // GT 后 MR 数量
+    const c = capMiles(rk,pk,mr*ratio);
+    out.push({ rk, isHome, keep, mr, ratio, miles:c.miles, capped:c.capped, fee:feeTag(rk,pk,tier) });
+  }
+  out.sort((a,b)=>b.miles-a.miles);
+  return out;
+}
+function defaultProgram(){
+  const t=DATA.regions[state.region].transfers, tier=defTier(state.region);
+  if(ratioOf(t.asiamiles,tier)!=null) return "asiamiles";
+  for(const k in t){ if(DATA.partners[k].type==="air" && ratioOf(t[k],tier)!=null) return k; }
+  for(const k in t){ if(ratioOf(t[k],tier)!=null) return k; }
+  return "asiamiles";
+}
+
+/* ============================== 初始化 ============================== */
+function initControls(){
+  $("region").innerHTML = Object.entries(DATA.regions).map(([k,r])=>`<option value="${k}">${r.name}</option>`).join("");
+  const reachable = Object.keys(DATA.partners).filter(pk=>Object.values(DATA.regions).some(r=>{
+    const e=r.transfers[pk]; return ratioOf(e, r.tiers?r.tiers.default:null)!=null; }));
+  $("program").innerHTML = reachable.map(k=>`<option value="${k}">${DATA.partners[k].name}</option>`).join("");
+
+  $("region").value=state.region;
+  $("region").onchange = e=>{ state.region=e.target.value; const t=defTier(state.region); state.tier=t||"charge"; state.program=defaultProgram(); render(); };
+  $("tier").onchange    = e=>{ state.tier=e.target.value; render(); };
+  $("amount").oninput   = e=>{ state.amount=Math.max(0,+e.target.value||0); render(); };
+  $("program").onchange = e=>{ state.program=e.target.value; render(); };
+  $("convModel").onchange = e=>{ state.convModel=e.target.value; render(); };
+  $("fxRefresh").onclick = loadFx;
+
+  // 总览表点击切换计划
+  $("overviewTable").querySelector("tbody").addEventListener("click", ev=>{
+    const tr=ev.target.closest("tr[data-prog]"); if(!tr) return;
+    state.program=tr.dataset.prog; $("program").value=state.program; render();
+    $("headline").scrollIntoView({behavior:"smooth",block:"center"});
+  });
+
+  buildDataPanel();
+}
+
+/* ============================== 渲染 ============================== */
+function render(){
+  const r=DATA.regions[state.region];
+  if(r.tiers){
+    $("tierWrap").style.display="flex";
+    $("tier").innerHTML = r.tiers.list.map(t=>`<option value="${t}">${r.tiers.labels[t]}</option>`).join("");
+    if(!r.tiers.list.includes(state.tier)) state.tier=r.tiers.default;
+    $("tier").value=state.tier;
+  } else $("tierWrap").style.display="none";
+  $("regionNote").innerHTML = "✦ "+rn(state.region)+"：" + r.note;
+  $("program").value = state.program;
+
+  const routes = programRoutes(state.program);
+  const homeRoute = routes.find(x=>x.isHome) || null;
+  const best = routes[0] || null;
+  renderHeadline(routes, homeRoute, best);
+  renderFocus(routes, homeRoute, best);
+  renderOverview();
+}
+
+let _heroFrom=0, _heroRaf=0;
+function animateHero(toMiles){
+  const el=$("heroVal"); if(!el) return;
+  const fmt=v=>nf(Math.round(v))+" 里程";
+  if(!window.requestAnimationFrame || typeof performance==="undefined"){ el.textContent=fmt(toMiles); _heroFrom=toMiles; return; }
+  cancelAnimationFrame(_heroRaf);
+  const from=_heroFrom, t0=performance.now(), dur=520;
+  (function step(now){
+    const k=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-k,3), v=from+(toMiles-from)*e;
+    el.textContent=fmt(v);
+    if(k<1) _heroRaf=requestAnimationFrame(step); else _heroFrom=toMiles;
+  })(t0);
+}
+
+function renderHeadline(routes, homeRoute, best){
+  const P=DATA.partners[state.program];
+  if(state.amount<=0 || !best){ $("headline").innerHTML=`<span class="muted">本区与各区都无法兑换 ${P?P.name:''}，或请输入积分数量。</span>`; _heroFrom=0; return; }
+  let line;
+  if(!homeRoute){
+    line = `<div class="hl-eyebrow">GT 后 · 本区不支持此计划</div>`
+      + `<div class="hl-main">本区（${rn(state.region)}）不支持 <b>${P.name}</b>，需 GT。最佳：GT 到 <b>${rn(best.rk)}</b></div>`
+      + `<div class="big" id="heroVal">${nf(best.miles)} 里程</div>`
+      + `<div class="hl-sub">${nf(best.mr)} MR（GT 保留 ${(best.keep*100).toFixed(best.keep<0.1?2:0)}%）→ ${nf(best.miles)} 里程 · 无 GT 前基准</div>`;
+  } else if(best.isHome){
+    line = `<div class="hl-eyebrow">本区即最佳 · GT 无增益</div>`
+      + `<div class="hl-main">你有 <b>${nf(state.amount)}</b> 分，本区直兑 <b>${P.name}</b>（GT 前已最优）</div>`
+      + `<div class="big" id="heroVal">${nf(homeRoute.miles)} 里程</div>`
+      + `<div class="hl-sub">${nf(homeRoute.mr)} MR 直兑 → ${nf(homeRoute.miles)} 里程</div>`;
+  } else {
+    const pct = homeRoute.miles>0 ? Math.round((best.miles-homeRoute.miles)/homeRoute.miles*100) : null;
+    line = `<div class="hl-eyebrow">最佳方案 · GT 后</div>`
+      + `<div class="hl-main">本区直兑 <b>${nf(homeRoute.miles)}</b> 里程（GT 前）→ GT 到 <b>${rn(best.rk)}</b> 兑 <b>${P.name}</b>`
+        + (pct!=null?` <span class="${pct>=0?'up':'down'}">${pct>=0?'+':''}${pct}%</span>`:``) + `</div>`
+      + `<div class="big" id="heroVal">${nf(best.miles)} 里程</div>`
+      + `<div class="hl-sub">GT 到 ${rn(best.rk)}：${nf(best.mr)} MR（保留 ${(best.keep*100).toFixed(best.keep<0.1?2:0)}%）→ ${nf(best.miles)} 里程 · 本区 GT 前 ${nf(homeRoute.miles)} 里程</div>`;
+  }
+  $("headline").innerHTML = line + `<div class="hl-note">跨区(GT 后)需 Global Card Transfer（电话办、约一年一次），换算为<b>估算</b>、非 Amex 官方公式，须电话确认。当前假设：${state.convModel==="cap"?"保守·上限 1:1":"纯实时汇率·理论值"}。</div>`;
+  animateHero(best.miles);
+}
+
+function renderFocus(routes, homeRoute, best){
+  const base = homeRoute? homeRoute.miles : null;
+  const body=$("focusTable").querySelector("tbody");
+  body.innerHTML = routes.map(x=>{
+    const keepTxt = x.isHome? `<span class="muted">本区(GT前)</span>` : (x.keep*100).toFixed(x.keep<0.1?2:(x.keep<10?1:0))+"%";
+    let cmp="—";
+    if(base!=null && base>0){
+      if(x===homeRoute) cmp=`<span class="muted">基准</span>`;
+      else{ const d=Math.round((x.miles-base)/base*100); cmp=`<span class="${d>=0?'up':'down'}">${d>=0?'+':''}${d}%</span>`; }
+    }
+    const notes = (x.fee?`<span class="tag warn">${x.fee}</span>`:'')
+      + (x.capped?'<span class="tag warn">封顶40k</span>':'')
+      + (!x.isHome && x.keep>1.0001 ? '<span class="tag theo">理论值·多半不可得</span>' : '');
+    const tags = (x.isHome?'<span class="tag home">本区</span>':'')
+      + (x===best && !x.isHome ?'<span class="tag best">最佳</span>':'');
+    const mrTxt = x.isHome ? `<span class="muted">${nf(x.mr)}<span class="small"> 原始</span></span>` : nf(x.mr);
+    return `<tr class="${x===best && !x.isHome?'best':''}">
+      <td><span class="code">${x.rk}</span>${rn(x.rk)}${tags}${notes}</td>
+      <td>${keepTxt}</td>
+      <td>${mrTxt}</td>
+      <td><b>${nf(x.miles)}</b></td>
+      <td>${cmp}</td>
+    </tr>`;
+  }).join("");
+  $("focusNote").textContent = `${DATA.partners[state.program].name} · 共 ${routes.length} 个可兑区域 · 本区按所选卡等级、他区按该区最优卡等级`;
+}
+
+function renderOverview(){
+  const homeT=DATA.regions[state.region].transfers, htier=state.tier;
+  const reachable = Object.keys(DATA.partners).filter(pk=>Object.values(DATA.regions).some(r=>ratioOf(r.transfers[pk], r.tiers?r.tiers.default:null)!=null));
+  const rows=[];
+  for(const pk of reachable){
+    const routes=programRoutes(pk); if(!routes.length) continue;
+    const home=routes.find(x=>x.isHome)||null;
+    const best=routes[0];
+    rows.push({ pk, homeMiles: home?home.miles:null, best, uplift: (home&&home.miles>0)?(best.miles/home.miles-1):null });
+  }
+  const supported = rows.filter(r=>r.homeMiles!=null).sort((a,b)=>(b.uplift??-1)-(a.uplift??-1));
+  const onlyGT = rows.filter(r=>r.homeMiles==null).sort((a,b)=>b.best.miles-a.best.miles);
+
+  const rowHtml = r=>{
+    const P=DATA.partners[r.pk], cur=r.pk===state.program;
+    const upTxt = r.uplift==null? `<span class="muted">—</span>`
+      : `<span class="${r.uplift>=0?'up':'down'}">${r.uplift>=0?'+':''}${Math.round(r.uplift*100)}%</span>`;
+    const bestCell = r.best.isHome? `<span class="muted">本区</span>` : `<span class="code">${r.best.rk}</span>${rn(r.best.rk)}`;
+    return `<tr class="clk${cur?' best':''}" data-prog="${r.pk}">
+      <td>${P.name}${P.type==='hotel'?'<span class="tag hotel">酒店</span>':''}${cur?'<span class="tag best">当前</span>':''}</td>
+      <td>${r.homeMiles==null?'<span class="muted">不支持</span>':nf(r.homeMiles)}</td>
+      <td><b>${nf(r.best.miles)}</b></td>
+      <td>${upTxt}</td>
+      <td>${bestCell}</td>
+    </tr>`;
+  };
+  let html = supported.map(rowHtml).join("");
+  if(onlyGT.length){
+    html += `<tr class="divider"><td colspan="5">仅 GT 可得（本区不支持，无 GT 前基准）</td></tr>` + onlyGT.map(rowHtml).join("");
+  }
+  $("overviewTable").querySelector("tbody").innerHTML = html;
+}
+
+/* ============================== 数据面板 ============================== */
+function buildDataPanel(){
+  renderFxGrid();
+  $("sources").innerHTML = DATA.sources.map(([t,s])=>`<div style="margin-bottom:8px">› <b>${t}</b><br><span class="muted">${s}</span></div>`).join("")
+    + `<div style="margin-top:10px" class="muted">跨区 GT 按汇率折算为近似，Amex 未公开官方公式，最终须致电确认。手续费为现金费、不抵扣里程。</div>`;
+}
+function renderFxGrid(){
+  $("fxGrid").innerHTML = Object.keys(DATA.currencies).map(c=>
+    `<div>1 USD =</div><div><input type="number" step="0.001" min="0" data-fx="${c}" value="${rate(c)}"> <span class="small muted">${c}${state.fxLive[c]?' · 实时':''}</span></div>`).join("");
+  $("fxGrid").querySelectorAll("input").forEach(inp=>inp.oninput=e=>{
+    const v=+e.target.value, c=e.target.dataset.fx;
+    if(isNaN(v)||v<=0) delete state.fxOverride[c]; else state.fxOverride[c]=v;
+    render();
+  });
+}
+
+/* ============================== 实时汇率 ============================== */
+async function loadFx(){
+  state.fxStatus="loading"; renderFxStatus();
+  try{
+    const res = await fetch("https://open.er-api.com/v6/latest/USD",{cache:"no-store"});
+    const j = await res.json();
+    if(j && j.result==="success" && j.rates){
+      const live={};
+      for(const c of Object.keys(DATA.currencies)) if(j.rates[c]!=null) live[c]=j.rates[c];
+      state.fxLive=live; state.fxStatus="live"; state.fxUpdated=j.time_last_update_utc||"";
+    } else throw new Error("bad payload");
+  }catch(e){ state.fxStatus="offline"; }
+  renderFxStatus(); renderFxGrid(); render();
+}
+function renderFxStatus(){
+  const d=$("fxDot"), s=$("fxStatus");
+  d.className = "dot "+state.fxStatus;
+  if(state.fxStatus==="live"){ const t=state.fxUpdated?state.fxUpdated.replace(/ \(.*\)$/,''):""; s.innerHTML=`实时汇率已加载${t?` · ${t}`:''}`; }
+  else if(state.fxStatus==="loading") s.textContent="正在获取实时汇率…";
+  else s.innerHTML=`离线 · 使用内置汇率（本地直接打开时浏览器可能拦截联网；部署到网站后自动获取，或点「刷新汇率」重试）`;
+}
+
+/* ============================== 启动 ============================== */
+initControls();
+state.program = defaultProgram();
+render();
+loadFx();
+</script>
+</body>
+</html>

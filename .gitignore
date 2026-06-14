@@ -1,0 +1,9 @@
+# Claude Code 本地设置（含权限等，不上传）
+.claude/
+
+# macOS
+.DS_Store
+
+# 编辑器
+.vscode/
+.idea/
