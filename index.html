@@ -184,27 +184,27 @@
 
   <!-- GT 前后对比 -->
   <section class="card reveal" style="--d:.14s">
-    <h2><span class="n">2</span>GT 前后 · 里程对比</h2>
+    <h2><span class="n">2</span>GT 前后对比</h2>
     <div class="filterbar">
-      <label class="fld">· 目标里程计划<select id="program"></select></label>
+      <label class="fld">· 目标计划<select id="program"></select></label>
       <label class="fld">· 跨区换算假设<select id="convModel">
         <option value="cap">保守·上限1:1（估算）</option>
         <option value="fx">纯实时汇率（理论值）</option>
       </select></label>
     </div>
     <div id="headline" class="headline"></div>
-    <div class="secttl">该计划在各区可兑里程（本区=GT前基准，他区=GT后）</div>
+    <div class="secttl" id="secFocus">该计划在各区可兑里程（本区=GT前基准，他区=GT后）</div>
     <div class="tbl-scroll">
       <table id="focusTable"><thead><tr>
-        <th>目的地</th><th>GT 保留</th><th>GT 后 MR</th><th>可兑里程</th><th>较本区(GT前)</th>
+        <th>目的地</th><th>GT 保留</th><th>GT 后 MR</th><th id="thUnit">可兑里程</th><th>较本区(GT前)</th>
       </tr></thead><tbody></tbody></table>
     </div>
     <div class="countnote" id="focusNote"></div>
 
-    <div class="secttl">全部里程计划总览 · 本区(GT前) vs 最佳区(GT后)　<span class="muted small" style="font-weight:400; letter-spacing:0">点任意行切换上方计划</span></div>
+    <div class="secttl">全部计划总览 · 本区(GT前) vs 最佳区(GT后)　<span class="muted small" style="font-weight:400; letter-spacing:0">点任意行切换上方计划</span></div>
     <div class="tbl-scroll">
       <table id="overviewTable"><thead><tr>
-        <th>里程计划</th><th>本区 GT前</th><th>最佳区 GT后</th><th>提升</th><th>最佳区</th>
+        <th>兑换计划</th><th>本区 GT前</th><th>最佳区 GT后</th><th>提升</th><th>最佳区</th>
       </tr></thead><tbody></tbody></table>
     </div>
   </section>
@@ -309,6 +309,7 @@ const ratioOf = (e,t)=> e==null?null : (typeof e==="number"? e : (e[t]??null));
 const defTier = rk => DATA.regions[rk].tiers ? DATA.regions[rk].tiers.default : null;
 const stripFlag = s => s.replace(/\s*[\u{1F1E6}-\u{1F1FF}]{2}/u,'').trim();
 const rn = rk => stripFlag(DATA.regions[rk].name);
+const unit = pk => DATA.partners[pk].type==="hotel" ? "积分" : "里程";   // 兑换单位
 const nf = (n,d=0)=> new Intl.NumberFormat("en-US",{maximumFractionDigits:d,minimumFractionDigits:d}).format(n);
 
 // GT 保留比例：从 home GT 到 to，按两地货币实时汇率折算 MR（Amex 未公开公式，估算）
@@ -390,6 +391,10 @@ function render(){
   $("regionNote").innerHTML = "✦ "+rn(state.region)+"：" + r.note;
   $("program").value = state.program;
 
+  const u = unit(state.program);                                  // 航空=里程，酒店=积分
+  $("thUnit").textContent = "可兑"+u;
+  $("secFocus").textContent = `该计划在各区可兑${u}（本区=GT前基准，他区=GT后）`;
+
   const routes = programRoutes(state.program);
   const homeRoute = routes.find(x=>x.isHome) || null;
   const best = routes[0] || null;
@@ -401,7 +406,7 @@ function render(){
 let _heroFrom=0, _heroRaf=0;
 function animateHero(toMiles){
   const el=$("heroVal"); if(!el) return;
-  const fmt=v=>nf(Math.round(v))+" 里程";
+  const fmt=v=>nf(Math.round(v))+" "+unit(state.program);
   if(!window.requestAnimationFrame || typeof performance==="undefined"){ el.textContent=fmt(toMiles); _heroFrom=toMiles; return; }
   cancelAnimationFrame(_heroRaf);
   const from=_heroFrom, t0=performance.now(), dur=520;
@@ -414,25 +419,26 @@ function animateHero(toMiles){
 
 function renderHeadline(routes, homeRoute, best){
   const P=DATA.partners[state.program];
+  const u = P && P.type==="hotel" ? "积分" : "里程";
   if(state.amount<=0 || !best){ $("headline").innerHTML=`<span class="muted">本区与各区都无法兑换 ${P?P.name:''}，或请输入积分数量。</span>`; _heroFrom=0; return; }
   let line;
   if(!homeRoute){
     line = `<div class="hl-eyebrow">GT 后 · 本区不支持此计划</div>`
       + `<div class="hl-main">本区（${rn(state.region)}）不支持 <b>${P.name}</b>，需 GT。最佳：GT 到 <b>${rn(best.rk)}</b></div>`
-      + `<div class="big" id="heroVal">${nf(best.miles)} 里程</div>`
-      + `<div class="hl-sub">${nf(best.mr)} MR（GT 保留 ${(best.keep*100).toFixed(best.keep<0.1?2:0)}%）→ ${nf(best.miles)} 里程 · 无 GT 前基准</div>`;
+      + `<div class="big" id="heroVal">${nf(best.miles)} ${u}</div>`
+      + `<div class="hl-sub">${nf(best.mr)} MR（GT 保留 ${(best.keep*100).toFixed(best.keep<0.1?2:0)}%）→ ${nf(best.miles)} ${u} · 无 GT 前基准</div>`;
   } else if(best.isHome){
     line = `<div class="hl-eyebrow">本区即最佳 · GT 无增益</div>`
       + `<div class="hl-main">你有 <b>${nf(state.amount)}</b> 分，本区直兑 <b>${P.name}</b>（GT 前已最优）</div>`
-      + `<div class="big" id="heroVal">${nf(homeRoute.miles)} 里程</div>`
-      + `<div class="hl-sub">${nf(homeRoute.mr)} MR 直兑 → ${nf(homeRoute.miles)} 里程</div>`;
+      + `<div class="big" id="heroVal">${nf(homeRoute.miles)} ${u}</div>`
+      + `<div class="hl-sub">${nf(homeRoute.mr)} MR 直兑 → ${nf(homeRoute.miles)} ${u}</div>`;
   } else {
     const pct = homeRoute.miles>0 ? Math.round((best.miles-homeRoute.miles)/homeRoute.miles*100) : null;
     line = `<div class="hl-eyebrow">最佳方案 · GT 后</div>`
-      + `<div class="hl-main">本区直兑 <b>${nf(homeRoute.miles)}</b> 里程（GT 前）→ GT 到 <b>${rn(best.rk)}</b> 兑 <b>${P.name}</b>`
+      + `<div class="hl-main">本区直兑 <b>${nf(homeRoute.miles)}</b> ${u}（GT 前）→ GT 到 <b>${rn(best.rk)}</b> 兑 <b>${P.name}</b>`
         + (pct!=null?` <span class="${pct>=0?'up':'down'}">${pct>=0?'+':''}${pct}%</span>`:``) + `</div>`
-      + `<div class="big" id="heroVal">${nf(best.miles)} 里程</div>`
-      + `<div class="hl-sub">GT 到 ${rn(best.rk)}：${nf(best.mr)} MR（保留 ${(best.keep*100).toFixed(best.keep<0.1?2:0)}%）→ ${nf(best.miles)} 里程 · 本区 GT 前 ${nf(homeRoute.miles)} 里程</div>`;
+      + `<div class="big" id="heroVal">${nf(best.miles)} ${u}</div>`
+      + `<div class="hl-sub">GT 到 ${rn(best.rk)}：${nf(best.mr)} MR（保留 ${(best.keep*100).toFixed(best.keep<0.1?2:0)}%）→ ${nf(best.miles)} ${u} · 本区 GT 前 ${nf(homeRoute.miles)} ${u}</div>`;
   }
   $("headline").innerHTML = line;
   animateHero(best.miles);
