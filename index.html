@@ -149,6 +149,15 @@
   .countnote{font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-top:10px; letter-spacing:.02em}
   .secttl{font-size:13px; font-weight:600; color:var(--ink-dim); margin:22px 0 12px; display:flex; align-items:center; gap:9px}
   .secttl::before{content:""; width:14px; height:1px; background:var(--coral)}
+  .ovbar{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+  .seg{display:inline-flex; border:1px solid var(--border); border-radius:9px; overflow:hidden}
+  .seg button{font:inherit; font-size:12px; font-weight:600; color:var(--ink-dim); background:transparent; border:none; padding:6px 15px; cursor:pointer; transition:.15s}
+  .seg button + button{border-left:1px solid var(--border)}
+  .seg button.on{background:rgba(127,202,187,.14); color:var(--aqua-bright)}
+  .seg button:hover:not(.on){background:rgba(255,255,255,.04)}
+  th.sortable{cursor:pointer; user-select:none}
+  th.sortable:hover{color:var(--aqua-bright)}
+  th.active{color:var(--aqua)}
 
   .pgrid{display:grid; grid-template-columns:1fr auto; gap:8px 16px; align-items:center; font-size:13px; color:var(--ink-dim)}
   .pgrid input{width:92px; text-align:right; padding:6px 9px; font-size:13px}
@@ -201,10 +210,16 @@
     </div>
     <div class="countnote" id="focusNote"></div>
 
-    <div class="secttl">全部计划总览 · 本区(GT前) vs 最佳区(GT后)　<span class="muted small" style="font-weight:400; letter-spacing:0">点任意行切换上方计划</span></div>
+    <div class="secttl">全部计划总览 · 本区(GT前) vs 最佳区(GT后)</div>
+    <div class="ovbar">
+      <div class="seg" id="ovType">
+        <button data-t="all" class="on">全部</button><button data-t="air">航空</button><button data-t="hotel">酒店</button>
+      </div>
+      <span class="muted small">点列头排序 · 点行切换上方计划</span>
+    </div>
     <div class="tbl-scroll">
       <table id="overviewTable"><thead><tr>
-        <th>兑换计划</th><th>本区 GT前</th><th>最佳区 GT后</th><th>提升</th><th>最佳区</th>
+        <th data-k="program" class="sortable">兑换计划</th><th data-k="home" class="sortable">本区 GT前</th><th data-k="best" class="sortable">最佳区 GT后</th><th data-k="uplift" class="sortable active">提升 ↓</th><th data-k="region" class="sortable">最佳区</th>
       </tr></thead><tbody></tbody></table>
     </div>
   </section>
@@ -298,6 +313,7 @@ const DATA = {
 /* ============================== 状态 ============================== */
 const state = {
   region:"HK", tier:"charge", amount:100000, program:"asiamiles", convModel:"cap",
+  ovType:"all", ovSort:{key:"uplift", dir:"desc"},
   fxOverride:{}, fxLive:{}, fxStatus:"loading", fxUpdated:"",
 };
 
@@ -374,6 +390,22 @@ function initControls(){
     const tr=ev.target.closest("tr[data-prog]"); if(!tr) return;
     state.program=tr.dataset.prog; $("program").value=state.program; render();
     $("headline").scrollIntoView({behavior:"smooth",block:"center"});
+  });
+
+  // 总览：类型筛选（全部/航空/酒店）
+  $("ovType").addEventListener("click", ev=>{
+    const b=ev.target.closest("button[data-t]"); if(!b) return;
+    state.ovType=b.dataset.t;
+    $("ovType").querySelectorAll("button").forEach(x=>x.classList.toggle("on", x.dataset.t===state.ovType));
+    render();
+  });
+  // 总览：列头点击排序
+  $("overviewTable").querySelector("thead").addEventListener("click", ev=>{
+    const th=ev.target.closest("th[data-k]"); if(!th) return;
+    const k=th.dataset.k;
+    if(state.ovSort.key===k) state.ovSort.dir = state.ovSort.dir==="asc"?"desc":"asc";
+    else state.ovSort = { key:k, dir:(k==="program"||k==="region")?"asc":"desc" };
+    render();
   });
 
   buildDataPanel();
@@ -471,9 +503,33 @@ function renderFocus(routes, homeRoute, best){
   $("focusNote").textContent = `${DATA.partners[state.program].name} · 共 ${routes.length} 个可兑区域 · 本区按所选卡等级、他区按该区最优卡等级`;
 }
 
+const OVCOLS = [["program","兑换计划"],["home","本区 GT前"],["best","最佳区 GT后"],["uplift","提升"],["region","最佳区"]];
+function ovValue(r,key){
+  if(key==="program") return DATA.partners[r.pk].name;
+  if(key==="home")    return r.homeMiles;
+  if(key==="best")    return r.best.miles;
+  if(key==="uplift")  return r.uplift;
+  if(key==="region")  return rn(r.best.rk);
+}
+function ovCmp(a,b){
+  const {key,dir}=state.ovSort;
+  const va=ovValue(a,key), vb=ovValue(b,key);
+  const na=va==null, nb=vb==null;
+  if(na&&nb) return b.best.miles-a.best.miles;     // 都无值 → 按最佳量降序
+  if(na) return 1; if(nb) return -1;               // 空值排末尾
+  const d = (typeof va==="string") ? va.localeCompare(vb,"zh") : va-vb;
+  return dir==="asc" ? d : -d;
+}
 function renderOverview(){
-  const homeT=DATA.regions[state.region].transfers, htier=state.tier;
-  const reachable = Object.keys(DATA.partners).filter(pk=>Object.values(DATA.regions).some(r=>ratioOf(r.transfers[pk], r.tiers?r.tiers.default:null)!=null));
+  // 表头（含排序箭头）
+  $("overviewTable").querySelector("thead tr").innerHTML = OVCOLS.map(([k,label])=>{
+    const active=state.ovSort.key===k, arrow=active?(state.ovSort.dir==="asc"?" ↑":" ↓"):"";
+    return `<th data-k="${k}" class="sortable${active?' active':''}">${label}${arrow}</th>`;
+  }).join("");
+
+  const reachable = Object.keys(DATA.partners).filter(pk=>
+    (state.ovType==="all" || DATA.partners[pk].type===state.ovType) &&
+    Object.values(DATA.regions).some(r=>ratioOf(r.transfers[pk], r.tiers?r.tiers.default:null)!=null));
   const rows=[];
   for(const pk of reachable){
     const routes=programRoutes(pk); if(!routes.length) continue;
@@ -481,8 +537,8 @@ function renderOverview(){
     const best=routes[0];
     rows.push({ pk, homeMiles: home?home.miles:null, best, uplift: (home&&home.miles>0)?(best.miles/home.miles-1):null });
   }
-  const supported = rows.filter(r=>r.homeMiles!=null).sort((a,b)=>(b.uplift??-1)-(a.uplift??-1));
-  const onlyGT = rows.filter(r=>r.homeMiles==null).sort((a,b)=>b.best.miles-a.best.miles);
+  const supported = rows.filter(r=>r.homeMiles!=null).sort(ovCmp);
+  const onlyGT    = rows.filter(r=>r.homeMiles==null).sort(ovCmp);
 
   const rowHtml = r=>{
     const P=DATA.partners[r.pk], cur=r.pk===state.program;
@@ -501,6 +557,7 @@ function renderOverview(){
   if(onlyGT.length){
     html += `<tr class="divider"><td colspan="5">仅 GT 可得（本区不支持，无 GT 前基准）</td></tr>` + onlyGT.map(rowHtml).join("");
   }
+  if(!html) html = `<tr><td colspan="5" class="muted" style="text-align:center; padding:18px">无符合条件的计划</td></tr>`;
   $("overviewTable").querySelector("tbody").innerHTML = html;
 }
 
