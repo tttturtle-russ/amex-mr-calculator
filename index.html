@@ -190,57 +190,57 @@
 <body>
 <div class="wrap">
   <header class="top reveal" style="--d:.02s">
-    <div class="eyebrow">Membership Rewards · 跨区里程终端</div>
-    <h1>Amex MR <span class="ac">里程换算计算器</span></h1>
-    <p class="sub">各区可兑里程 · GT（Global Transfer）前后对比 · 实时汇率折算</p>
+    <div class="eyebrow"><span data-i18n="eyebrow">Membership Rewards · 跨区里程终端</span><button class="mini" id="langBtn" type="button" style="margin-left:auto">EN</button></div>
+    <h1 data-i18n-html="h1">Amex MR <span class="ac">里程换算计算器</span></h1>
+    <p class="sub" data-i18n="sub">各区可兑里程 · GT（Global Transfer）前后对比 · 实时汇率折算</p>
     <div class="rule"></div>
     <span class="stamp" id="dataStamp">数据核对 · 2026-06</span>
   </header>
 
   <!-- 输入 -->
   <section class="card reveal" style="--d:.10s">
-    <h2><span class="n">1</span>你的积分</h2>
+    <h2><span class="n">1</span><span data-i18n="card1">你的积分</span></h2>
     <div class="grid">
-      <label class="fld">· 发卡地区<select id="region"></select></label>
-      <label class="fld" id="tierWrap" style="display:none">· 卡片等级<select id="tier"></select></label>
-      <label class="fld">· MR 积分数量<input id="amount" type="number" min="0" step="1000" value="100000"></label>
+      <label class="fld"><span data-i18n="lblRegion">· 发卡地区</span><select id="region"></select></label>
+      <label class="fld" id="tierWrap" style="display:none"><span data-i18n="lblTier">· 卡片等级</span><select id="tier"></select></label>
+      <label class="fld"><span data-i18n="lblAmount">· MR 积分数量</span><input id="amount" type="number" min="0" step="1000" value="100000"></label>
     </div>
     <div class="fxbar">
       <span><span id="fxDot" class="dot loading"></span> <span id="fxStatus">正在获取实时汇率…</span></span>
-      <button class="mini" id="fxRefresh">刷新汇率</button>
-      <span class="muted small">实时汇率用于 GT 折算</span>
+      <button class="mini" id="fxRefresh" data-i18n="fxRefresh">刷新汇率</button>
+      <span class="muted small" data-i18n="fxHint">实时汇率用于 GT 折算</span>
     </div>
     <div id="regionNote" class="rnote"></div>
   </section>
 
   <!-- GT 前后对比 -->
   <section class="card reveal" style="--d:.14s">
-    <h2><span class="n">2</span>GT 前后对比</h2>
+    <h2><span class="n">2</span><span data-i18n="card2">GT 前后对比</span></h2>
     <div class="filterbar">
-      <label class="fld">· 目标计划<select id="program"></select></label>
-      <label class="fld">· 跨区换算假设<select id="convModel">
-        <option value="cap">保守·上限1:1（估算）</option>
-        <option value="fx">纯实时汇率（理论值）</option>
+      <label class="fld"><span data-i18n="lblProgram">· 目标计划</span><select id="program"></select></label>
+      <label class="fld"><span data-i18n="lblModel">· 跨区换算假设</span><select id="convModel">
+        <option value="cap" data-i18n="optCap">保守·上限1:1（估算）</option>
+        <option value="fx" data-i18n="optFx">纯实时汇率（理论值）</option>
       </select></label>
-      <label class="fld">· 转点奖励 %<input id="bonus" type="number" min="0" step="5" value="0"></label>
-      <button class="mini" id="shareBtn" type="button" style="margin-left:auto; align-self:flex-end">复制方案链接</button>
+      <label class="fld"><span data-i18n="lblBonus">· 转点奖励 %</span><input id="bonus" type="number" min="0" step="5" value="0"></label>
+      <button class="mini" id="shareBtn" type="button" data-i18n="shareBtn" style="margin-left:auto; align-self:flex-end">复制方案链接</button>
     </div>
-    <div class="hint">跨区折算按汇率近似——Amex 不公开官方公式，数字仅供参考；可在下方「数据与假设」里按真实情况改每个区的 GT 保留比例。转点奖励按你填的数对当前计划全区生效，活动通常分区，请自行确认。</div>
+    <div class="hint" data-i18n="hint">跨区折算按汇率近似——Amex 不公开官方公式，数字仅供参考；可在下方「数据与假设」里按真实情况改每个区的 GT 保留比例。转点奖励按你填的数对当前计划全区生效，活动通常分区，请自行确认。</div>
     <div id="headline" class="headline"></div>
     <div class="secttl" id="secFocus">该计划在各区可兑里程（本区=GT前基准，他区=GT后）</div>
     <div class="tbl-scroll">
       <table id="focusTable"><thead><tr>
-        <th>目的地</th><th>GT 保留</th><th>GT 后 MR</th><th id="thUnit">可兑里程</th><th>较本区(GT前)</th>
+        <th data-i18n="focusH1">目的地</th><th data-i18n="focusH2">GT 保留</th><th data-i18n="focusH3">GT 后 MR</th><th id="thUnit">可兑里程</th><th data-i18n="focusH5">较本区(GT前)</th>
       </tr></thead><tbody></tbody></table>
     </div>
     <div class="countnote" id="focusNote"></div>
 
-    <div class="secttl">全部计划总览 · 本区(GT前) vs 里程最多区(GT后)</div>
+    <div class="secttl" data-i18n="ovSecttl">全部计划总览 · 本区(GT前) vs 里程最多区(GT后)</div>
     <div class="ovbar">
       <div class="seg" id="ovType">
-        <button data-t="all" class="on">全部</button><button data-t="air">航空</button><button data-t="hotel">酒店</button>
+        <button data-t="all" class="on" data-i18n="ovAll">全部</button><button data-t="air" data-i18n="ovAir">航空</button><button data-t="hotel" data-i18n="ovHotel">酒店</button>
       </div>
-      <span class="muted small">点列头排序 · 点行切换上方计划</span>
+      <span class="muted small" data-i18n="ovHint">点列头排序 · 点行切换上方计划</span>
     </div>
     <div class="tbl-scroll">
       <table id="overviewTable"><thead><tr>
@@ -251,28 +251,28 @@
 
   <!-- 数据 -->
   <section class="card reveal" style="--d:.18s">
-    <h2><span class="n">3</span>数据与假设 · 可编辑</h2>
+    <h2><span class="n">3</span><span data-i18n="card3">数据与假设 · 可编辑</span></h2>
     <details class="sub">
-      <summary>汇率（1 USD = ? 当地）— 驱动「GT 折算」，可手动覆盖</summary>
+      <summary data-i18n="fxSummary">汇率（1 USD = ? 当地）— 驱动「GT 折算」，可手动覆盖</summary>
       <div class="body">
-        <div class="small muted" style="margin-bottom:10px">默认联网获取实时汇率；失败则用内置值。手动改某格即覆盖该币种。</div>
+        <div class="small muted" data-i18n="fxDesc" style="margin-bottom:10px">默认联网获取实时汇率；失败则用内置值。手动改某格即覆盖该币种。</div>
         <div id="fxGrid" class="pgrid"></div>
       </div>
     </details>
     <details class="sub">
-      <summary>GT 保留比例（从本区到各区）— 汇率估算，可手动覆盖</summary>
+      <summary data-i18n="retainSummary">GT 保留比例（从本区到各区）— 汇率估算，可手动覆盖</summary>
       <div class="body">
-        <div class="small muted" style="margin-bottom:10px">默认按两地货币汇率估算（非官方）。若你或他人实际 GT 过，可把真实保留比例填进去，覆盖估算。</div>
+        <div class="small muted" data-i18n="retainDesc" style="margin-bottom:10px">默认按两地货币汇率估算（非官方）。若你或他人实际 GT 过，可把真实保留比例填进去，覆盖估算。</div>
         <div id="retainGrid" class="pgrid"></div>
       </div>
     </details>
     <details class="sub">
-      <summary>数据来源与提醒</summary>
+      <summary data-i18n="srcSummary">数据来源与提醒</summary>
       <div class="body src" id="sources"></div>
     </details>
   </section>
 
-  <footer>仅供参考 · 数据随时变动，以 American Express 为准</footer>
+  <footer data-i18n="footer">仅供参考 · 数据随时变动，以 American Express 为准</footer>
 </div>
 
 <script>
@@ -283,68 +283,78 @@
    ============================================================ */
 const DATA = {
   partners:{
-    asiamiles:{name:"国泰 Asia Miles",type:"air"}, krisflyer:{name:"新航 KrisFlyer",type:"air"},
-    ba_avios:{name:"英航 Avios (BA Club)",type:"air"}, iberia_avios:{name:"Iberia Avios",type:"air"},
-    aerlingus_avios:{name:"Aer Lingus Avios",type:"air"}, qatar_avios:{name:"卡塔尔 Avios",type:"air"},
-    aeroplan:{name:"加航 Aeroplan",type:"air"}, ana:{name:"全日空 ANA",type:"air"},
-    flyingblue:{name:"法荷航 Flying Blue",type:"air"}, delta:{name:"达美 SkyMiles",type:"air"},
-    emirates:{name:"阿联酋 Skywards",type:"air"}, etihad:{name:"阿提哈德 Guest",type:"air"},
-    qantas:{name:"澳洲航空 Qantas",type:"air"}, virginatlantic:{name:"维珍大西洋 Flying Club",type:"air"},
-    velocity:{name:"维珍澳洲 Velocity",type:"air"}, lifemiles:{name:"Avianca LifeMiles",type:"air"},
-    jetblue:{name:"JetBlue TrueBlue",type:"air"}, aeromexico:{name:"墨西哥航空 Aeroméxico",type:"air"},
-    evaair:{name:"长荣 EVA Infinity",type:"air"}, malaysia:{name:"马航 Enrich",type:"air"},
-    thai:{name:"泰航 Royal Orchid Plus",type:"air"}, sas:{name:"北欧航空 EuroBonus",type:"air"},
-    marriott:{name:"万豪 Bonvoy",type:"hotel"}, hilton:{name:"希尔顿 Honors",type:"hotel"},
-    accor:{name:"雅高 ALL",type:"hotel"}, radisson:{name:"丽笙 Rewards",type:"hotel"},
-    choice:{name:"Choice Privileges",type:"hotel"},
+    asiamiles:{name:{zh:"国泰 Asia Miles",en:"Cathay Asia Miles"},type:"air"}, krisflyer:{name:{zh:"新航 KrisFlyer",en:"Singapore KrisFlyer"},type:"air"},
+    ba_avios:{name:{zh:"英航 Avios (BA Club)",en:"British Airways Avios (BA Club)"},type:"air"}, iberia_avios:{name:{zh:"Iberia Avios",en:"Iberia Avios"},type:"air"},
+    aerlingus_avios:{name:{zh:"Aer Lingus Avios",en:"Aer Lingus Avios"},type:"air"}, qatar_avios:{name:{zh:"卡塔尔 Avios",en:"Qatar Avios"},type:"air"},
+    aeroplan:{name:{zh:"加航 Aeroplan",en:"Air Canada Aeroplan"},type:"air"}, ana:{name:{zh:"全日空 ANA",en:"ANA Mileage Club"},type:"air"},
+    flyingblue:{name:{zh:"法荷航 Flying Blue",en:"Air France-KLM Flying Blue"},type:"air"}, delta:{name:{zh:"达美 SkyMiles",en:"Delta SkyMiles"},type:"air"},
+    emirates:{name:{zh:"阿联酋 Skywards",en:"Emirates Skywards"},type:"air"}, etihad:{name:{zh:"阿提哈德 Guest",en:"Etihad Guest"},type:"air"},
+    qantas:{name:{zh:"澳洲航空 Qantas",en:"Qantas Frequent Flyer"},type:"air"}, virginatlantic:{name:{zh:"维珍大西洋 Flying Club",en:"Virgin Atlantic Flying Club"},type:"air"},
+    velocity:{name:{zh:"维珍澳洲 Velocity",en:"Virgin Australia Velocity"},type:"air"}, lifemiles:{name:{zh:"Avianca LifeMiles",en:"Avianca LifeMiles"},type:"air"},
+    jetblue:{name:{zh:"JetBlue TrueBlue",en:"JetBlue TrueBlue"},type:"air"}, aeromexico:{name:{zh:"墨西哥航空 Aeroméxico",en:"Aeroméxico Rewards"},type:"air"},
+    evaair:{name:{zh:"长荣 EVA Infinity",en:"EVA Air Infinity"},type:"air"}, malaysia:{name:{zh:"马航 Enrich",en:"Malaysia Airlines Enrich"},type:"air"},
+    thai:{name:{zh:"泰航 Royal Orchid Plus",en:"Thai Airways Royal Orchid Plus"},type:"air"}, sas:{name:{zh:"北欧航空 EuroBonus",en:"SAS EuroBonus"},type:"air"},
+    marriott:{name:{zh:"万豪 Bonvoy",en:"Marriott Bonvoy"},type:"hotel"}, hilton:{name:{zh:"希尔顿 Honors",en:"Hilton Honors"},type:"hotel"},
+    accor:{name:{zh:"雅高 ALL",en:"Accor ALL"},type:"hotel"}, radisson:{name:{zh:"丽笙 Rewards",en:"Radisson Rewards"},type:"hotel"},
+    choice:{name:{zh:"Choice Privileges",en:"Choice Privileges"},type:"hotel"},
   },
   currencies:{ USD:1, HKD:7.8, CNY:7.2, SGD:1.29, GBP:0.79, AUD:1.52, CAD:1.37, EUR:0.92, JPY:156, INR:86, TWD:32 },
   currencyOf:{ HK:"HKD", US:"USD", UK:"GBP", SG:"SGD", AU:"AUD", CA:"CAD", JP:"JPY", IN:"INR", TW:"TWD" },
 
   regions:{
-    HK:{ name:"香港 🇭🇰", fee:{perConv:"HK$400/次", air:true},
-      note:"航空统一 18,000 分 = 1,000 里程；每次航空兑换收 HK$400（Explorer/Centurion/公司卡豁免），Qantas 另加 HK$300。阿联酋暂停。",
+    HK:{ name:{zh:"香港 🇭🇰",en:"Hong Kong 🇭🇰"}, fee:{perConv:{zh:"HK$400/次",en:"HK$400/transfer"}, air:true},
+      note:{zh:"航空统一 18,000 分 = 1,000 里程；每次航空兑换收 HK$400（Explorer/Centurion/公司卡豁免），Qantas 另加 HK$300。阿联酋暂停。",
+            en:"All airlines at a flat 18,000 MR = 1,000 miles; HK$400 per airline transfer (waived on Explorer/Centurion/corporate cards), Qantas adds HK$300. Emirates suspended."},
       transfers:{ asiamiles:0.05556, krisflyer:0.05556, ba_avios:0.05556, evaair:0.05556, qantas:0.05556, malaysia:0.05556, virginatlantic:0.05556, marriott:0.1111, hilton:0.15625 } },
-    US:{ name:"美国 🇺🇸",
-      note:"多数航空 1:1；国泰/阿联酋/JetBlue 0.8；Aeroméxico 1.6；希尔顿 1:2。达美/JetBlue 收联邦消费税。阿提哈德 2026/6/30 下线。",
+    US:{ name:{zh:"美国 🇺🇸",en:"United States 🇺🇸"},
+      note:{zh:"多数航空 1:1；国泰/阿联酋/JetBlue 0.8；Aeroméxico 1.6；希尔顿 1:2。达美/JetBlue 收联邦消费税。阿提哈德 2026/6/30 下线。",
+            en:"Most airlines 1:1; Cathay/Emirates/JetBlue 0.8; Aeroméxico 1.6; Hilton 1:2. Delta/JetBlue charge a federal excise tax. Etihad ends 2026/6/30."},
       transfers:{ asiamiles:0.80, krisflyer:1.0, ba_avios:1.0, iberia_avios:1.0, aerlingus_avios:1.0, qatar_avios:1.0, aeroplan:1.0, ana:1.0, flyingblue:1.0, delta:1.0, emirates:0.80, etihad:1.0, qantas:1.0, virginatlantic:1.0, lifemiles:1.0, jetblue:0.80, aeromexico:1.60, marriott:1.0, hilton:2.0, choice:1.0 } },
-    UK:{ name:"英国 🇬🇧",
-      note:"多数航空 1:1；新航 3:2(0.667)、阿联酋 2:1(0.5)。希尔顿 1:2、万豪 2:3、雅高 3:1、丽笙 1:3。阿提哈德 2026/6/22 下线。无转点费。",
+    UK:{ name:{zh:"英国 🇬🇧",en:"United Kingdom 🇬🇧"},
+      note:{zh:"多数航空 1:1；新航 3:2(0.667)、阿联酋 2:1(0.5)。希尔顿 1:2、万豪 2:3、雅高 3:1、丽笙 1:3。阿提哈德 2026/6/22 下线。无转点费。",
+            en:"Most airlines 1:1; Singapore 3:2 (0.667), Emirates 2:1 (0.5). Hilton 1:2, Marriott 2:3, Accor 3:1, Radisson 1:3. Etihad ends 2026/6/22. No transfer fee."},
       transfers:{ ba_avios:1.0, iberia_avios:1.0, qatar_avios:1.0, virginatlantic:1.0, asiamiles:1.0, flyingblue:1.0, delta:1.0, qantas:1.0, sas:1.0, krisflyer:0.667, emirates:0.5, etihad:1.0, hilton:2.0, marriott:1.5, accor:0.333, radisson:3.0 } },
-    SG:{ name:"新加坡 🇸🇬", fee:{perConv:"S$20.38/次(Rewards卡)", air:true, waiveTier:"charge"},
-      note:"比例分卡等级（Platinum Charge/Centurion 最优）。2026/2/23 全线贬值。航空转点需年费约 S$40.74（Platinum 系列豁免）；Rewards 卡每次 S$20.38。",
-      tiers:{ list:["charge","standard"], labels:{charge:"Platinum Charge / Centurion", standard:"Platinum Reserve / 信用卡"}, default:"charge" },
+    SG:{ name:{zh:"新加坡 🇸🇬",en:"Singapore 🇸🇬"}, fee:{perConv:{zh:"S$20.38/次(Rewards卡)",en:"S$20.38/transfer (Rewards card)"}, air:true, waiveTier:"charge"},
+      note:{zh:"比例分卡等级（Platinum Charge/Centurion 最优）。2026/2/23 全线贬值。航空转点需年费约 S$40.74（Platinum 系列豁免）；Rewards 卡每次 S$20.38。",
+            en:"Ratios vary by card tier (Platinum Charge/Centurion best). Across-the-board devaluation on 2026/2/23. Airline transfers need an annual fee of ~S$40.74 (waived on Platinum series); Rewards cards pay S$20.38 per transfer."},
+      tiers:{ list:["charge","standard"], labels:{charge:{zh:"Platinum Charge / Centurion",en:"Platinum Charge / Centurion"}, standard:{zh:"Platinum Reserve / 信用卡",en:"Platinum Reserve / credit cards"}}, default:"charge" },
       transfers:{ krisflyer:{charge:0.5,standard:0.4545}, asiamiles:{charge:0.5,standard:0.4545}, ba_avios:{charge:0.5,standard:0.4545}, qantas:{charge:0.5,standard:0.4545}, evaair:{charge:0.5,standard:0.4545}, malaysia:{charge:0.5,standard:0.4545}, thai:{charge:0.5,standard:0.4545}, emirates:{charge:0.4167,standard:0.3846}, marriott:1.0, hilton:1.25 } },
-    AU:{ name:"澳大利亚 🇦🇺",
-      note:"多数 3:1；Velocity/Qantas 2:1(0.5)、阿联酋 4:1(0.25)。Qantas 仅 Platinum Charge/Centurion。2025/12/15 大幅贬值，泰航移除。",
-      tiers:{ list:["charge","standard"], labels:{charge:"Platinum Charge / Centurion", standard:"其他 MR 卡"}, default:"charge" },
+    AU:{ name:{zh:"澳大利亚 🇦🇺",en:"Australia 🇦🇺"},
+      note:{zh:"多数 3:1；Velocity/Qantas 2:1(0.5)、阿联酋 4:1(0.25)。Qantas 仅 Platinum Charge/Centurion。2025/12/15 大幅贬值，泰航移除。",
+            en:"Most 3:1; Velocity/Qantas 2:1 (0.5), Emirates 4:1 (0.25). Qantas only on Platinum Charge/Centurion. Major devaluation on 2025/12/15; Thai Airways removed."},
+      tiers:{ list:["charge","standard"], labels:{charge:{zh:"Platinum Charge / Centurion",en:"Platinum Charge / Centurion"}, standard:{zh:"其他 MR 卡",en:"Other MR cards"}}, default:"charge" },
       transfers:{ velocity:0.5, krisflyer:0.333, qantas:{charge:0.5,standard:null}, asiamiles:0.333, ba_avios:0.333, emirates:0.25, etihad:0.333, qatar_avios:0.333, malaysia:0.333, virginatlantic:0.333 } },
-    CA:{ name:"加拿大 🇨🇦",
-      note:"多数 1:1；法荷航 2026/1 升回 1:1。国泰/达美/阿提哈德 4:3(0.75)。万豪 5:6(1.2)。旧卡 “MR Select” 不能转航空。",
+    CA:{ name:{zh:"加拿大 🇨🇦",en:"Canada 🇨🇦"},
+      note:{zh:"多数 1:1；法荷航 2026/1 升回 1:1。国泰/达美/阿提哈德 4:3(0.75)。万豪 5:6(1.2)。旧卡 “MR Select” 不能转航空。",
+            en:"Most 1:1; Flying Blue back to 1:1 since 2026/1. Cathay/Delta/Etihad 4:3 (0.75). Marriott 5:6 (1.2). Legacy “MR Select” can't transfer to airlines."},
       transfers:{ aeroplan:1.0, flyingblue:1.0, ba_avios:1.0, asiamiles:0.75, delta:0.75, etihad:0.75, marriott:1.2, hilton:1.0 } },
-    JP:{ name:"日本 🇯🇵", fee:{perConv:"年费¥5,500", air:true}, cap:{partner:"ana",maxMiles:40000},
-      note:"主力 ANA 1:1，但需加入「MR ANA 程序」年费 ¥5,500，且每自然年封顶 40,000 ANA 里程。JAL 非伙伴。",
+    JP:{ name:{zh:"日本 🇯🇵",en:"Japan 🇯🇵"}, fee:{perConv:{zh:"年费¥5,500",en:"¥5,500/yr"}, air:true}, cap:{partner:"ana",maxMiles:40000},
+      note:{zh:"主力 ANA 1:1，但需加入「MR ANA 程序」年费 ¥5,500，且每自然年封顶 40,000 ANA 里程。JAL 非伙伴。",
+            en:"Mainly ANA 1:1, but requires enrolling in the “MR ANA Program” (¥5,500/yr) and is capped at 40,000 ANA miles per calendar year. JAL is not a partner."},
       transfers:{ ana:1.0 } },
-    IN:{ name:"印度 🇮🇳",
-      note:"航空多为 2:1(0.5)，万豪 1:1（常有 30–50% 转点奖励）。印度卡核心价值多在里程券模式。",
+    IN:{ name:{zh:"印度 🇮🇳",en:"India 🇮🇳"},
+      note:{zh:"航空多为 2:1(0.5)，万豪 1:1（常有 30–50% 转点奖励）。印度卡核心价值多在里程券模式。",
+            en:"Airlines mostly 2:1 (0.5); Marriott 1:1 (often with a 30–50% transfer bonus). On Indian cards the core value is usually in mileage vouchers."},
       transfers:{ krisflyer:0.5, emirates:0.5, etihad:0.5, ba_avios:0.5, qatar_avios:0.5, asiamiles:0.5, virginatlantic:0.5, marriott:1.0 } },
-    TW:{ name:"台湾 🇹🇼",
-      note:"多数航空 1:1；国泰 2026/3/1 贬为 5:4(0.8)。万豪 10:9(0.9)、希尔顿 4:5(1.25)。转点约需 2–3 周。",
+    TW:{ name:{zh:"台湾 🇹🇼",en:"Taiwan 🇹🇼"},
+      note:{zh:"多数航空 1:1；国泰 2026/3/1 贬为 5:4(0.8)。万豪 10:9(0.9)、希尔顿 4:5(1.25)。转点约需 2–3 周。",
+            en:"Most airlines 1:1; Cathay devalued to 5:4 (0.8) on 2026/3/1. Marriott 10:9 (0.9), Hilton 4:5 (1.25). Transfers take about 2–3 weeks."},
       transfers:{ asiamiles:0.8, krisflyer:1.0, evaair:1.0, thai:1.0, malaysia:1.0, marriott:0.9, hilton:1.25 } },
   },
   lastVerified:"2026-06",
   sources:[
-    ["跨区 Global Card Transfer（电话办、约一年一次、按汇率折算）","pointhacks.com.au / princeoftravel.com / americanexpress.com 各区 Moving Abroad 页"],
-    ["US 转点伙伴与 2026/3 国泰贬值","upgradedpoints.com、frequentmiler.com、Amex 官方伙伴页"],
-    ["HK 18,000:1,000 与 HK$400 手续费","americanexpress.com.hk 各伙伴页"],
-    ["UK/SG 比例与 2026 早期贬值","headforpoints.com、milelion.com、mainlymiles.com、Amex 官方页"],
-    ["AU/CA/JP/IN/TW 比例","pointhacks.com.au、frugalflyer.ca、ana.co.jp、cardtrail.in、jazztalk.tw"],
-    ["实时汇率 API","open.er-api.com（免费、无需密钥）"],
+    [{zh:"跨区 Global Card Transfer（电话办、约一年一次、按汇率折算）",en:"Cross-region Global Card Transfer (by phone, ~once a year, FX-adjusted)"},{zh:"pointhacks.com.au / princeoftravel.com / americanexpress.com 各区 Moving Abroad 页",en:"pointhacks.com.au / princeoftravel.com / americanexpress.com regional Moving Abroad pages"}],
+    [{zh:"US 转点伙伴与 2026/3 国泰贬值",en:"US transfer partners & the 2026/3 Cathay devaluation"},{zh:"upgradedpoints.com、frequentmiler.com、Amex 官方伙伴页",en:"upgradedpoints.com, frequentmiler.com, Amex official partner pages"}],
+    [{zh:"HK 18,000:1,000 与 HK$400 手续费",en:"HK 18,000:1,000 and the HK$400 fee"},{zh:"americanexpress.com.hk 各伙伴页",en:"americanexpress.com.hk partner pages"}],
+    [{zh:"UK/SG 比例与 2026 早期贬值",en:"UK/SG ratios and early-2026 devaluations"},{zh:"headforpoints.com、milelion.com、mainlymiles.com、Amex 官方页",en:"headforpoints.com, milelion.com, mainlymiles.com, Amex official pages"}],
+    [{zh:"AU/CA/JP/IN/TW 比例",en:"AU/CA/JP/IN/TW ratios"},{zh:"pointhacks.com.au、frugalflyer.ca、ana.co.jp、cardtrail.in、jazztalk.tw",en:"pointhacks.com.au, frugalflyer.ca, ana.co.jp, cardtrail.in, jazztalk.tw"}],
+    [{zh:"实时汇率 API",en:"Live FX API"},{zh:"open.er-api.com（免费、无需密钥）",en:"open.er-api.com (free, no key)"}],
   ],
 };
 
 /* ============================== 状态 ============================== */
 const state = {
+  lang:"zh",
   region:"HK", tier:"charge", amount:100000, program:"asiamiles", convModel:"cap",
   ovType:"all", ovSort:{key:"uplift", dir:"desc"},
   bonus:{}, retainOverride:{},
@@ -353,13 +363,21 @@ const state = {
 
 /* ============================== 工具 ============================== */
 const $ = id => document.getElementById(id);
+// 双语取值：{zh,en} → 当前语言；非该结构原样返回
+const L = x => (x && typeof x==="object" && !Array.isArray(x) && ("zh" in x)) ? (x[state.lang] ?? x.zh) : x;
+// UI 文案查表，支持函数模板
+function t(key,...a){
+  const e = I18N[key]; if(e==null) return key;
+  let v = e[state.lang]; if(v===undefined) v = e.zh;
+  return typeof v==="function" ? v(...a) : v;
+}
 const rate = c => state.fxOverride[c] ?? state.fxLive[c] ?? DATA.currencies[c];   // 1 USD = ? 当地
 const curOf = rk => DATA.currencyOf[rk];
 const ratioOf = (e,t)=> e==null?null : (typeof e==="number"? e : (e[t]??null));
 const defTier = rk => DATA.regions[rk].tiers ? DATA.regions[rk].tiers.default : null;
 const stripFlag = s => s.replace(/\s*[\u{1F1E6}-\u{1F1FF}]{2}/u,'').trim();
-const rn = rk => stripFlag(DATA.regions[rk].name);
-const unit = pk => DATA.partners[pk].type==="hotel" ? "积分" : "里程";   // 兑换单位
+const rn = rk => stripFlag(L(DATA.regions[rk].name));
+const unit = pk => DATA.partners[pk].type==="hotel" ? t("points") : t("miles");   // 兑换单位
 const nf = (n,d=0)=> new Intl.NumberFormat("en-US",{maximumFractionDigits:d,minimumFractionDigits:d}).format(n);
 const bonusOf = pk => Math.max(0, state.bonus[pk]||0);   // 转点奖励 %（按计划）
 
@@ -400,28 +418,35 @@ function programRoutes(pk){
   return out;
 }
 function defaultProgram(){
-  const t=DATA.regions[state.region].transfers, tier=defTier(state.region);
-  if(ratioOf(t.asiamiles,tier)!=null) return "asiamiles";
-  for(const k in t){ if(DATA.partners[k].type==="air" && ratioOf(t[k],tier)!=null) return k; }
-  for(const k in t){ if(ratioOf(t[k],tier)!=null) return k; }
+  const tr=DATA.regions[state.region].transfers, tier=defTier(state.region);
+  if(ratioOf(tr.asiamiles,tier)!=null) return "asiamiles";
+  for(const k in tr){ if(DATA.partners[k].type==="air" && ratioOf(tr[k],tier)!=null) return k; }
+  for(const k in tr){ if(ratioOf(tr[k],tier)!=null) return k; }
   return "asiamiles";
 }
 
 /* ============================== 初始化 ============================== */
-function initControls(){
-  $("region").innerHTML = Object.entries(DATA.regions).map(([k,r])=>`<option value="${k}">${r.name}</option>`).join("");
-  const reachable = Object.keys(DATA.partners).filter(pk=>Object.values(DATA.regions).some(r=>{
+function reachablePrograms(){
+  return Object.keys(DATA.partners).filter(pk=>Object.values(DATA.regions).some(r=>{
     const e=r.transfers[pk]; return ratioOf(e, r.tiers?r.tiers.default:null)!=null; }));
-  $("program").innerHTML = reachable.map(k=>`<option value="${k}">${DATA.partners[k].name}</option>`).join("");
-
+}
+function fillSelects(){
+  $("region").innerHTML = Object.entries(DATA.regions).map(([k,r])=>`<option value="${k}">${L(r.name)}</option>`).join("");
   $("region").value=state.region;
-  $("region").onchange = e=>{ state.region=e.target.value; const t=defTier(state.region); state.tier=t||"charge"; state.program=defaultProgram(); render(); renderRetainGrid(); };
+  $("program").innerHTML = reachablePrograms().map(k=>`<option value="${k}">${L(DATA.partners[k].name)}</option>`).join("");
+  $("program").value=state.program;
+}
+function initControls(){
+  fillSelects();
+
+  $("region").onchange = e=>{ state.region=e.target.value; const dt=defTier(state.region); state.tier=dt||"charge"; state.program=defaultProgram(); render(); renderRetainGrid(); };
   $("tier").onchange    = e=>{ state.tier=e.target.value; render(); };
   $("amount").oninput   = e=>{ state.amount=Math.max(0,+e.target.value||0); render(); };
   $("program").onchange = e=>{ state.program=e.target.value; render(); };
   $("convModel").onchange = e=>{ state.convModel=e.target.value; render(); renderRetainGrid(); };
   $("bonus").oninput    = e=>{ const v=Math.max(0,+e.target.value||0); if(v>0) state.bonus[state.program]=v; else delete state.bonus[state.program]; render(); };
   $("shareBtn").onclick = doShare;
+  $("langBtn").onclick  = ()=> setLang(state.lang==="zh"?"en":"zh");
   $("fxRefresh").onclick = loadFx;
 
   // 总览表点击切换计划
@@ -455,17 +480,17 @@ function render(){
   const r=DATA.regions[state.region];
   if(r.tiers){
     $("tierWrap").style.display="flex";
-    $("tier").innerHTML = r.tiers.list.map(t=>`<option value="${t}">${r.tiers.labels[t]}</option>`).join("");
+    $("tier").innerHTML = r.tiers.list.map(tk=>`<option value="${tk}">${L(r.tiers.labels[tk])}</option>`).join("");
     if(!r.tiers.list.includes(state.tier)) state.tier=r.tiers.default;
     $("tier").value=state.tier;
   } else $("tierWrap").style.display="none";
-  $("regionNote").innerHTML = "✦ "+rn(state.region)+"：" + r.note;
+  $("regionNote").innerHTML = "✦ "+rn(state.region)+(state.lang==="zh"?"：":": ") + L(r.note);
   $("program").value = state.program;
   $("bonus").value = state.bonus[state.program]||0;
 
   const u = unit(state.program);                                  // 航空=里程，酒店=积分
-  $("thUnit").textContent = "可兑"+u;
-  $("secFocus").textContent = `该计划在各区可兑${u}（本区=GT前基准，他区=GT后）`;
+  $("thUnit").textContent = t("redeemable", u);
+  $("secFocus").textContent = t("secFocus", u);
 
   const routes = programRoutes(state.program);
   const homeRoute = routes.find(x=>x.isHome) || null;
@@ -492,26 +517,28 @@ function animateHero(toMiles){
 
 function renderHeadline(routes, homeRoute, best){
   const P=DATA.partners[state.program];
-  const u = P && P.type==="hotel" ? "积分" : "里程";
-  if(state.amount<=0 || !best){ $("headline").innerHTML=`<span class="muted">本区与各区都无法兑换 ${P?P.name:''}，或请输入积分数量。</span>`; _heroFrom=0; return; }
+  const u = unit(state.program);
+  const name = P ? L(P.name) : "";
+  if(state.amount<=0 || !best){ $("headline").innerHTML=`<span class="muted">${t("hlEmpty", name)}</span>`; _heroFrom=0; return; }
+  const kp = k => (k*100).toFixed(k<0.1?2:0);
   let line;
   if(!homeRoute){
-    line = `<div class="hl-eyebrow">GT 后 · 本区不支持此计划</div>`
-      + `<div class="hl-main">本区（${rn(state.region)}）不支持 <b>${P.name}</b>，需 GT。里程最多：GT 到 <b>${rn(best.rk)}</b></div>`
+    line = `<div class="hl-eyebrow">${t("hlGtOnlyEyebrow")}</div>`
+      + `<div class="hl-main">${t("hlGtOnlyMain", rn(state.region), name, rn(best.rk))}</div>`
       + `<div class="big" id="heroVal">${nf(best.miles)} ${u}</div>`
-      + `<div class="hl-sub">${nf(best.mr)} MR（GT 保留 ${(best.keep*100).toFixed(best.keep<0.1?2:0)}%）→ ${nf(best.miles)} ${u} · 无 GT 前基准</div>`;
+      + `<div class="hl-sub">${t("hlGtOnlySub", nf(best.mr), kp(best.keep), nf(best.miles), u)}</div>`;
   } else if(best.isHome){
-    line = `<div class="hl-eyebrow">本区里程已最多 · GT 无增益</div>`
-      + `<div class="hl-main">你有 <b>${nf(state.amount)}</b> 分，本区直兑 <b>${P.name}</b>（GT 前已最优）</div>`
+    line = `<div class="hl-eyebrow">${t("hlHomeEyebrow")}</div>`
+      + `<div class="hl-main">${t("hlHomeMain", nf(state.amount), name)}</div>`
       + `<div class="big" id="heroVal">${nf(homeRoute.miles)} ${u}</div>`
-      + `<div class="hl-sub">${nf(homeRoute.mr)} MR 直兑 → ${nf(homeRoute.miles)} ${u}</div>`;
+      + `<div class="hl-sub">${t("hlHomeSub", nf(homeRoute.mr), nf(homeRoute.miles), u)}</div>`;
   } else {
     const pct = homeRoute.miles>0 ? Math.round((best.miles-homeRoute.miles)/homeRoute.miles*100) : null;
-    line = `<div class="hl-eyebrow">里程最多 · GT 后</div>`
-      + `<div class="hl-main">本区直兑 <b>${nf(homeRoute.miles)}</b> ${u}（GT 前）→ GT 到 <b>${rn(best.rk)}</b> 兑 <b>${P.name}</b>`
-        + (pct!=null?` <span class="${pct>=0?'up':'down'}">${pct>=0?'+':''}${pct}%</span>`:``) + `</div>`
+    const pctHtml = pct!=null?` <span class="${pct>=0?'up':'down'}">${pct>=0?'+':''}${pct}%</span>`:``;
+    line = `<div class="hl-eyebrow">${t("hlAfterEyebrow")}</div>`
+      + `<div class="hl-main">${t("hlAfterMain", nf(homeRoute.miles), u, rn(best.rk), name, pctHtml)}</div>`
       + `<div class="big" id="heroVal">${nf(best.miles)} ${u}</div>`
-      + `<div class="hl-sub">GT 到 ${rn(best.rk)}：${nf(best.mr)} MR（保留 ${(best.keep*100).toFixed(best.keep<0.1?2:0)}%）→ ${nf(best.miles)} ${u} · 本区 GT 前 ${nf(homeRoute.miles)} ${u}</div>`;
+      + `<div class="hl-sub">${t("hlAfterSub", rn(best.rk), nf(best.mr), kp(best.keep), nf(best.miles), u, nf(homeRoute.miles))}</div>`;
   }
   $("headline").innerHTML = line;
   animateHero(best.miles);
@@ -521,18 +548,18 @@ function renderFocus(routes, homeRoute, best){
   const base = homeRoute? homeRoute.miles : null;
   const body=$("focusTable").querySelector("tbody");
   body.innerHTML = routes.map(x=>{
-    const keepTxt = x.isHome? `<span class="muted">本区(GT前)</span>` : (x.keep*100).toFixed(x.keep<0.1?2:(x.keep<10?1:0))+"%";
+    const keepTxt = x.isHome? `<span class="muted">${t("homePreGT")}</span>` : (x.keep*100).toFixed(x.keep<0.1?2:(x.keep<10?1:0))+"%";
     let cmp="—";
     if(base!=null && base>0){
-      if(x===homeRoute) cmp=`<span class="muted">基准</span>`;
+      if(x===homeRoute) cmp=`<span class="muted">${t("baseline")}</span>`;
       else{ const d=Math.round((x.miles-base)/base*100); cmp=`<span class="${d>=0?'up':'down'}">${d>=0?'+':''}${d}%</span>`; }
     }
-    const notes = (x.fee?`<span class="tag warn">${x.fee}</span>`:'')
-      + (x.capped?'<span class="tag warn">封顶40k</span>':'')
-      + (!x.isHome && x.keep>1.0001 ? '<span class="tag theo">理论值·多半不可得</span>' : '');
-    const tags = (x.isHome?'<span class="tag home">本区</span>':'')
-      + (x===best && !x.isHome ?'<span class="tag best">里程最多</span>':'');
-    const mrTxt = x.isHome ? `<span class="muted">${nf(x.mr)}<span class="small"> 原始</span></span>` : nf(x.mr);
+    const notes = (x.fee?`<span class="tag warn">${L(x.fee)}</span>`:'')
+      + (x.capped?`<span class="tag warn">${t("cap40k")}</span>`:'')
+      + (!x.isHome && x.keep>1.0001 ? `<span class="tag theo">${t("theo")}</span>` : '');
+    const tags = (x.isHome?`<span class="tag home">${t("tagHome")}</span>`:'')
+      + (x===best && !x.isHome ?`<span class="tag best">${t("tagMost")}</span>`:'');
+    const mrTxt = x.isHome ? `<span class="muted">${nf(x.mr)}<span class="small">${t("rawSuffix")}</span></span>` : nf(x.mr);
     return `<tr class="${x===best && !x.isHome?'best':''}">
       <td><span class="code">${x.rk}</span>${rn(x.rk)}${tags}${notes}</td>
       <td>${keepTxt}</td>
@@ -542,13 +569,13 @@ function renderFocus(routes, homeRoute, best){
     </tr>`;
   }).join("");
   const bf = bonusOf(state.program);
-  $("focusNote").textContent = `${DATA.partners[state.program].name} · 共 ${routes.length} 个可兑区域 · 本区按所选卡等级、他区按该区最优卡等级`
-    + (bf>0?` · 含 +${bf}% 转点奖励`:"");
+  $("focusNote").textContent = t("focusNote", L(DATA.partners[state.program].name), routes.length)
+    + (bf>0? t("bonusSuffix", bf) : "");
 }
 
-const OVCOLS = [["program","兑换计划"],["home","本区 GT前"],["best","里程最多 GT后"],["uplift","提升"],["region","里程最多区"]];
+const ovCols = () => [["program",t("ovProgram")],["home",t("ovHome")],["best",t("ovBest")],["uplift",t("ovUplift")],["region",t("ovRegion")]];
 function ovValue(r,key){
-  if(key==="program") return DATA.partners[r.pk].name;
+  if(key==="program") return L(DATA.partners[r.pk].name);
   if(key==="home")    return r.homeMiles;
   if(key==="best")    return r.best.miles;
   if(key==="uplift")  return r.uplift;
@@ -560,12 +587,12 @@ function ovCmp(a,b){
   const na=va==null, nb=vb==null;
   if(na&&nb) return b.best.miles-a.best.miles;     // 都无值 → 按最佳量降序
   if(na) return 1; if(nb) return -1;               // 空值排末尾
-  const d = (typeof va==="string") ? va.localeCompare(vb,"zh") : va-vb;
+  const d = (typeof va==="string") ? va.localeCompare(vb,state.lang) : va-vb;
   return dir==="asc" ? d : -d;
 }
 function renderOverview(){
   // 表头（含排序箭头）
-  $("overviewTable").querySelector("thead tr").innerHTML = OVCOLS.map(([k,label])=>{
+  $("overviewTable").querySelector("thead tr").innerHTML = ovCols().map(([k,label])=>{
     const active=state.ovSort.key===k, arrow=active?(state.ovSort.dir==="asc"?" ↑":" ↓"):"";
     return `<th data-k="${k}" class="sortable${active?' active':''}">${label}${arrow}</th>`;
   }).join("");
@@ -587,10 +614,10 @@ function renderOverview(){
     const P=DATA.partners[r.pk], cur=r.pk===state.program;
     const upTxt = r.uplift==null? `<span class="muted">—</span>`
       : `<span class="${r.uplift>=0?'up':'down'}">${r.uplift>=0?'+':''}${Math.round(r.uplift*100)}%</span>`;
-    const bestCell = r.best.isHome? `<span class="muted">本区</span>` : `<span class="code">${r.best.rk}</span>${rn(r.best.rk)}`;
+    const bestCell = r.best.isHome? `<span class="muted">${t("homeWord")}</span>` : `<span class="code">${r.best.rk}</span>${rn(r.best.rk)}`;
     return `<tr class="clk${cur?' best':''}" data-prog="${r.pk}">
-      <td>${P.name}${P.type==='hotel'?'<span class="tag hotel">酒店</span>':''}${cur?'<span class="tag best">当前</span>':''}</td>
-      <td>${r.homeMiles==null?'<span class="muted">不支持</span>':nf(r.homeMiles)}</td>
+      <td>${L(P.name)}${P.type==='hotel'?`<span class="tag hotel">${t("tagHotel")}</span>`:''}${cur?`<span class="tag best">${t("tagCurrent")}</span>`:''}</td>
+      <td>${r.homeMiles==null?`<span class="muted">${t("notSupported")}</span>`:nf(r.homeMiles)}</td>
       <td><b>${nf(r.best.miles)}</b></td>
       <td>${upTxt}</td>
       <td>${bestCell}</td>
@@ -598,9 +625,9 @@ function renderOverview(){
   };
   let html = supported.map(rowHtml).join("");
   if(onlyGT.length){
-    html += `<tr class="divider"><td colspan="5">仅 GT 可得（本区不支持，无 GT 前基准）</td></tr>` + onlyGT.map(rowHtml).join("");
+    html += `<tr class="divider"><td colspan="5">${t("dividerGT")}</td></tr>` + onlyGT.map(rowHtml).join("");
   }
-  if(!html) html = `<tr><td colspan="5" class="muted" style="text-align:center; padding:18px">无符合条件的计划</td></tr>`;
+  if(!html) html = `<tr><td colspan="5" class="muted" style="text-align:center; padding:18px">${t("noPrograms")}</td></tr>`;
   $("overviewTable").querySelector("tbody").innerHTML = html;
 }
 
@@ -608,12 +635,12 @@ function renderOverview(){
 function buildDataPanel(){
   renderFxGrid();
   renderRetainGrid();
-  $("sources").innerHTML = DATA.sources.map(([t,s])=>`<div style="margin-bottom:8px">› <b>${t}</b><br><span class="muted">${s}</span></div>`).join("")
-    + `<div style="margin-top:10px" class="muted">跨区 GT 按汇率折算为近似，Amex 未公开官方公式，最终须致电确认。手续费为现金费、不抵扣里程。</div>`;
+  $("sources").innerHTML = DATA.sources.map(([title,src])=>`<div style="margin-bottom:8px">› <b>${L(title)}</b><br><span class="muted">${L(src)}</span></div>`).join("")
+    + `<div style="margin-top:10px" class="muted">${t("sourcesNote")}</div>`;
 }
 function renderFxGrid(){
   $("fxGrid").innerHTML = Object.keys(DATA.currencies).map(c=>
-    `<div>1 USD =</div><div><input type="number" step="0.001" min="0" data-fx="${c}" value="${rate(c)}"> <span class="small muted">${c}${state.fxLive[c]?' · 实时':''}</span></div>`).join("");
+    `<div>1 USD =</div><div><input type="number" step="0.001" min="0" data-fx="${c}" value="${rate(c)}"> <span class="small muted">${c}${state.fxLive[c]?t("fxLiveTag"):''}</span></div>`).join("");
   $("fxGrid").querySelectorAll("input").forEach(inp=>inp.oninput=e=>{
     const v=+e.target.value, c=e.target.dataset.fx;
     if(isNaN(v)||v<=0) delete state.fxOverride[c]; else state.fxOverride[c]=v;
@@ -627,7 +654,7 @@ function renderRetainGrid(){
   grid.innerHTML = dests.map(rk=>{
     const key=home+"_"+rk, ov=state.retainOverride[key], val=(ov!=null?ov:retain(home,rk));
     return `<div><span class="code">${rk}</span>${rn(rk)}</div>`
-      + `<div><input type="number" step="0.01" min="0" data-ret="${rk}" value="${(+val).toFixed(3)}"> <span class="small muted">${ov!=null?'已覆盖':'估算'}</span></div>`;
+      + `<div><input type="number" step="0.01" min="0" data-ret="${rk}" value="${(+val).toFixed(3)}"> <span class="small muted">${ov!=null?t("retOverridden"):t("retEstimate")}</span></div>`;
   }).join("");
   grid.querySelectorAll("input").forEach(inp=>inp.oninput=e=>{
     const v=+e.target.value, key=home+"_"+e.target.dataset.ret;
@@ -654,11 +681,11 @@ async function loadFx(){
 function renderFxStatus(){
   const d=$("fxDot"), s=$("fxStatus");
   d.className = "dot "+state.fxStatus;
-  const stamp = state.fxUpdated ? state.fxUpdated.replace(/ \(.*\)$/,'') : "";
-  if(state.fxStatus==="live") s.innerHTML=`实时汇率已加载${stamp?` · ${stamp}`:''}`;
-  else if(state.fxStatus==="cached") s.innerHTML=`缓存汇率，正在刷新…${stamp?` · ${stamp}`:''}`;
-  else if(state.fxStatus==="loading") s.textContent="正在获取实时汇率…";
-  else s.innerHTML=`离线 · 使用内置汇率（本地直接打开时浏览器可能拦截联网；部署到网站后自动获取，或点「刷新汇率」重试）`;
+  const stamp = state.fxUpdated ? " · "+state.fxUpdated.replace(/ \(.*\)$/,'') : "";
+  if(state.fxStatus==="live") s.textContent=t("fxLive", stamp);
+  else if(state.fxStatus==="cached") s.textContent=t("fxCached", stamp);
+  else if(state.fxStatus==="loading") s.textContent=t("fxLoading");
+  else s.textContent=t("fxOffline");
 }
 
 /* ===================== 状态持久化 / 分享链接 ===================== */
@@ -667,6 +694,7 @@ let _booted=false;
 
 function snapshot(){
   const s={ r:state.region, a:state.amount, p:state.program, m:state.convModel, ov:state.ovType };
+  if(state.lang!=="zh") s.l=state.lang;
   if(DATA.regions[state.region].tiers) s.t=state.tier;
   const enc = o => Object.entries(o).filter(([,v])=>v>0).map(([k,v])=>k+":"+v).join(",");
   const b=enc(state.bonus); if(b) s.b=b;
@@ -690,6 +718,7 @@ function parseMap(str){
 }
 function applySnapshot(s){
   if(!s) return;
+  state.lang = s.l==="en" ? "en" : "zh";
   if(s.r && DATA.regions[s.r]) state.region=s.r;
   const tiers=DATA.regions[state.region].tiers;
   state.tier = (s.t && tiers && tiers.list.includes(s.t)) ? s.t : (defTier(state.region)||"charge");
@@ -715,10 +744,10 @@ function restoreFx(){
   }catch(e){}
 }
 function doShare(){
-  const url=location.href, b=$("shareBtn"), prev=b.textContent;
-  const done=()=>{ b.textContent="已复制链接"; setTimeout(()=>{ b.textContent=prev; },1500); };
-  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,()=>prompt("复制此链接：",url));
-  else prompt("复制此链接：",url);
+  const url=location.href, b=$("shareBtn");
+  const done=()=>{ b.textContent=t("copied"); setTimeout(()=>{ b.textContent=t("shareBtn"); },1500); };
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,()=>prompt(t("copyPrompt"),url));
+  else prompt(t("copyPrompt"),url);
 }
 
 /* ===================== 数据自检 / 时效 ===================== */
@@ -730,14 +759,14 @@ function monthsSince(ym){
 function renderDataAge(){
   const el=$("dataStamp"); if(!el) return;
   const n=monthsSince(DATA.lastVerified);
-  el.textContent = `数据核对 · ${DATA.lastVerified}` + (n>=6?` · 已约 ${n} 个月未更新，请自行核对`:"");
-  if(n>=6) el.style.color="var(--warn)";
+  el.textContent = t("dataStamp", DATA.lastVerified, n);
+  el.style.color = n>=6 ? "var(--warn)" : "";
 }
 function validateData(){
   try{
     const errs=[];
     for(const [pk,p] of Object.entries(DATA.partners)){
-      if(!p.name) errs.push(`partner ${pk} 缺 name`);
+      if(!p.name || !p.name.zh || !p.name.en) errs.push(`partner ${pk} 缺 name`);
       if(p.type!=="air" && p.type!=="hotel") errs.push(`partner ${pk} type 非法: ${p.type}`);
     }
     for(const [rk,r] of Object.entries(DATA.regions)){
@@ -756,12 +785,119 @@ function validateData(){
   }catch(e){ console.warn("[数据自检] 运行出错", e); }
 }
 
+/* ===================== 文案（中 / 英） ===================== */
+const I18N = {
+  docTitle:{ zh:"Amex MR 跨区里程计算器 · Global Transfer 前后价值对比", en:"Amex MR Cross-Region Miles Calculator · Before vs After Global Transfer" },
+  eyebrow:{ zh:"Membership Rewards · 跨区里程终端", en:"Membership Rewards · Cross-Region Miles" },
+  h1:{ zh:`Amex MR <span class="ac">里程换算计算器</span>`, en:`Amex MR <span class="ac">Miles Calculator</span>` },
+  sub:{ zh:"各区可兑里程 · GT（Global Transfer）前后对比 · 实时汇率折算", en:"Redeemable miles by region · before vs after GT (Global Transfer) · live FX" },
+  card1:{ zh:"你的积分", en:"Your Points" },
+  lblRegion:{ zh:"· 发卡地区", en:"· Issuing region" },
+  lblTier:{ zh:"· 卡片等级", en:"· Card tier" },
+  lblAmount:{ zh:"· MR 积分数量", en:"· MR points" },
+  fxRefresh:{ zh:"刷新汇率", en:"Refresh FX" },
+  fxHint:{ zh:"实时汇率用于 GT 折算", en:"Live FX drives GT conversion" },
+  card2:{ zh:"GT 前后对比", en:"Before vs After GT" },
+  lblProgram:{ zh:"· 目标计划", en:"· Target program" },
+  lblModel:{ zh:"· 跨区换算假设", en:"· Cross-region model" },
+  optCap:{ zh:"保守·上限1:1（估算）", en:"Conservative · cap 1:1 (est.)" },
+  optFx:{ zh:"纯实时汇率（理论值）", en:"Pure live FX (theoretical)" },
+  lblBonus:{ zh:"· 转点奖励 %", en:"· Transfer bonus %" },
+  shareBtn:{ zh:"复制方案链接", en:"Copy share link" },
+  copied:{ zh:"已复制链接", en:"Copied!" },
+  copyPrompt:{ zh:"复制此链接：", en:"Copy this link:" },
+  hint:{ zh:"跨区折算按汇率近似——Amex 不公开官方公式，数字仅供参考；可在下方「数据与假设」里按真实情况改每个区的 GT 保留比例。转点奖励按你填的数对当前计划全区生效，活动通常分区，请自行确认。",
+         en:"Cross-region figures are FX approximations — Amex publishes no official formula, so treat them as a guide; you can set each region's GT-retain ratio to real values under “Data & Assumptions” below. The transfer bonus you enter applies to the current program across all regions, but promos are usually region-specific — please confirm." },
+  focusH1:{ zh:"目的地", en:"Destination" },
+  focusH2:{ zh:"GT 保留", en:"GT retain" },
+  focusH3:{ zh:"GT 后 MR", en:"MR after GT" },
+  focusH5:{ zh:"较本区(GT前)", en:"vs home (pre-GT)" },
+  ovSecttl:{ zh:"全部计划总览 · 本区(GT前) vs 里程最多区(GT后)", en:"All programs · home (pre-GT) vs most-miles region (post-GT)" },
+  ovAll:{ zh:"全部", en:"All" }, ovAir:{ zh:"航空", en:"Air" }, ovHotel:{ zh:"酒店", en:"Hotel" },
+  ovHint:{ zh:"点列头排序 · 点行切换上方计划", en:"Click a header to sort · click a row to switch the program above" },
+  card3:{ zh:"数据与假设 · 可编辑", en:"Data & Assumptions · Editable" },
+  fxSummary:{ zh:"汇率（1 USD = ? 当地）— 驱动「GT 折算」，可手动覆盖", en:"Exchange rates (1 USD = ? local) — drive GT conversion, editable" },
+  fxDesc:{ zh:"默认联网获取实时汇率；失败则用内置值。手动改某格即覆盖该币种。", en:"Live rates by default; falls back to built-in values. Edit a cell to override that currency." },
+  retainSummary:{ zh:"GT 保留比例（从本区到各区）— 汇率估算，可手动覆盖", en:"GT retain ratio (home → each region) — FX estimate, editable" },
+  retainDesc:{ zh:"默认按两地货币汇率估算（非官方）。若你或他人实际 GT 过，可把真实保留比例填进去，覆盖估算。", en:"Estimated from the two currencies' FX rate (unofficial). If you or someone has actually done a GT, enter the real retain ratio to override the estimate." },
+  srcSummary:{ zh:"数据来源与提醒", en:"Sources & notes" },
+  footer:{ zh:"仅供参考 · 数据随时变动，以 American Express 为准", en:"For reference only · data changes anytime; American Express is authoritative" },
+
+  miles:{ zh:"里程", en:"miles" }, points:{ zh:"积分", en:"points" },
+  redeemable:{ zh:(u)=>`可兑${u}`, en:(u)=>`Redeemable ${u}` },
+  secFocus:{ zh:(u)=>`该计划在各区可兑${u}（本区=GT前基准，他区=GT后）`, en:(u)=>`Redeemable ${u} by region (home = pre-GT baseline, others = post-GT)` },
+
+  ovProgram:{ zh:"兑换计划", en:"Program" }, ovHome:{ zh:"本区 GT前", en:"Home pre-GT" },
+  ovBest:{ zh:"里程最多 GT后", en:"Most miles post-GT" }, ovUplift:{ zh:"提升", en:"Uplift" }, ovRegion:{ zh:"里程最多区", en:"Most-miles region" },
+  tagHotel:{ zh:"酒店", en:"Hotel" }, tagCurrent:{ zh:"当前", en:"Current" }, notSupported:{ zh:"不支持", en:"N/A" },
+  homeWord:{ zh:"本区", en:"Home" },
+  dividerGT:{ zh:"仅 GT 可得（本区不支持，无 GT 前基准）", en:"GT-only (not supported at home; no pre-GT baseline)" },
+  noPrograms:{ zh:"无符合条件的计划", en:"No matching programs" },
+
+  homePreGT:{ zh:"本区(GT前)", en:"Home (pre-GT)" }, baseline:{ zh:"基准", en:"baseline" },
+  cap40k:{ zh:"封顶40k", en:"Cap 40k" }, theo:{ zh:"理论值·多半不可得", en:"theoretical · rarely attainable" },
+  tagHome:{ zh:"本区", en:"Home" }, tagMost:{ zh:"里程最多", en:"Most miles" }, rawSuffix:{ zh:" 原始", en:" raw" },
+  fxLiveTag:{ zh:" · 实时", en:" · live" },
+  retOverridden:{ zh:"已覆盖", en:"overridden" }, retEstimate:{ zh:"估算", en:"estimate" },
+
+  focusNote:{ zh:(name,count)=>`${name} · 共 ${count} 个可兑区域 · 本区按所选卡等级、他区按该区最优卡等级`,
+              en:(name,count)=>`${name} · ${count} redeemable regions · home uses your card tier, others use each region's best tier` },
+  bonusSuffix:{ zh:(bf)=>` · 含 +${bf}% 转点奖励`, en:(bf)=>` · incl. +${bf}% transfer bonus` },
+
+  hlEmpty:{ zh:(name)=>`本区与各区都无法兑换 ${name}，或请输入积分数量。`, en:(name)=>`Neither home nor any region can redeem ${name} — or enter a points amount.` },
+  hlGtOnlyEyebrow:{ zh:"GT 后 · 本区不支持此计划", en:"Post-GT · home doesn't support this" },
+  hlGtOnlyMain:{ zh:(home,name,best)=>`本区（${home}）不支持 <b>${name}</b>，需 GT。里程最多：GT 到 <b>${best}</b>`,
+                 en:(home,name,best)=>`Home (${home}) doesn't support <b>${name}</b> — GT required. Most miles: GT to <b>${best}</b>` },
+  hlGtOnlySub:{ zh:(mr,kp,miles,u)=>`${mr} MR（GT 保留 ${kp}%）→ ${miles} ${u} · 无 GT 前基准`,
+                en:(mr,kp,miles,u)=>`${mr} MR (GT retains ${kp}%) → ${miles} ${u} · no pre-GT baseline` },
+  hlHomeEyebrow:{ zh:"本区里程已最多 · GT 无增益", en:"Home already most · GT adds nothing" },
+  hlHomeMain:{ zh:(amt,name)=>`你有 <b>${amt}</b> 分，本区直兑 <b>${name}</b>（GT 前已最优）`,
+               en:(amt,name)=>`You have <b>${amt}</b> points; redeem <b>${name}</b> at home (already best pre-GT)` },
+  hlHomeSub:{ zh:(mr,miles,u)=>`${mr} MR 直兑 → ${miles} ${u}`, en:(mr,miles,u)=>`${mr} MR redeemed at home → ${miles} ${u}` },
+  hlAfterEyebrow:{ zh:"里程最多 · GT 后", en:"Most miles · post-GT" },
+  hlAfterMain:{ zh:(hm,u,best,name,pct)=>`本区直兑 <b>${hm}</b> ${u}（GT 前）→ GT 到 <b>${best}</b> 兑 <b>${name}</b>${pct}`,
+                en:(hm,u,best,name,pct)=>`Home direct <b>${hm}</b> ${u} (pre-GT) → GT to <b>${best}</b> for <b>${name}</b>${pct}` },
+  hlAfterSub:{ zh:(best,mr,kp,miles,u,hm)=>`GT 到 ${best}：${mr} MR（保留 ${kp}%）→ ${miles} ${u} · 本区 GT 前 ${hm} ${u}`,
+               en:(best,mr,kp,miles,u,hm)=>`GT to ${best}: ${mr} MR (retains ${kp}%) → ${miles} ${u} · home pre-GT ${hm} ${u}` },
+
+  fxLive:{ zh:(s)=>`实时汇率已加载${s}`, en:(s)=>`Live FX loaded${s}` },
+  fxCached:{ zh:(s)=>`缓存汇率，正在刷新…${s}`, en:(s)=>`Cached FX, refreshing…${s}` },
+  fxLoading:{ zh:"正在获取实时汇率…", en:"Fetching live FX…" },
+  fxOffline:{ zh:"离线 · 使用内置汇率（本地直接打开时浏览器可能拦截联网；部署到网站后自动获取，或点「刷新汇率」重试）",
+              en:"Offline · using built-in FX (browsers may block requests on local files; it loads automatically once deployed, or click Refresh FX)" },
+  dataStamp:{ zh:(ym,n)=>`数据核对 · ${ym}`+(n>=6?` · 已约 ${n} 个月未更新，请自行核对`:""),
+              en:(ym,n)=>`Data checked · ${ym}`+(n>=6?` · ~${n} months since last update, please verify`:"") },
+  sourcesNote:{ zh:"跨区 GT 按汇率折算为近似，Amex 未公开官方公式，最终须致电确认。手续费为现金费、不抵扣里程。",
+                en:"Cross-region GT is an FX-based approximation; Amex publishes no official formula, so confirm by phone. Fees are cash charges and don't reduce miles." },
+};
+
+// 把当前语言套用到静态文案、标题、下拉项与语言按钮
+function applyI18n(){
+  document.documentElement.lang = state.lang==="zh" ? "zh-Hans" : "en";
+  document.title = t("docTitle");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>{ el.innerHTML = t(el.dataset.i18nHtml); });
+  const lb=$("langBtn"); if(lb) lb.textContent = state.lang==="zh" ? "EN" : "中文";
+  fillSelects();
+}
+function setLang(l){
+  state.lang = l==="en" ? "en" : "zh";
+  applyI18n();
+  buildDataPanel();
+  render();
+  renderFxStatus();
+  renderDataAge();
+  if(_booted) syncPersist();
+}
+
 /* ============================== 启动 ============================== */
 validateData();
 restoreState();
 restoreFx();
 initControls();
+applyI18n();
 render();
+renderFxStatus();
 renderDataAge();
 _booted=true;
 loadFx();
