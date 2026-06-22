@@ -397,8 +397,8 @@ const DATA = {
 
   regions:{
     HK:{ name:{zh:"香港 🇭🇰",en:"Hong Kong 🇭🇰"}, fee:{perConv:{zh:"HK$400/次",en:"HK$400/transfer"}, air:true, cash:{amt:400,cur:"HKD",per:"transfer"}},
-      note:{zh:"航空统一 18,000 分 = 1,000 里程；每次航空兑换收 HK$400（Explorer/Centurion/公司卡豁免），Qantas 另加 HK$300。阿联酋暂停。",
-            en:"All airlines at a flat 18,000 MR = 1,000 miles; HK$400 per airline transfer (waived on Explorer/Centurion/corporate cards), Qantas adds HK$300. Emirates suspended."},
+      note:{zh:"航空统一 18,000 分 = 1,000 里程；每次航空兑换收 HK$400（Explorer/Centurion/公司卡豁免），Qantas 为 HK$300（替代 HK$400，非额外加收）。阿联酋暂停。",
+            en:"All airlines at a flat 18,000 MR = 1,000 miles; HK$400 per airline transfer (waived on Explorer/Centurion/corporate cards); Qantas is HK$300 (instead of HK$400, not on top). Emirates suspended."},
       transfers:{ asiamiles:0.05556, krisflyer:0.05556, ba_avios:0.05556, evaair:0.05556, qantas:0.05556, malaysia:0.05556, virginatlantic:0.05556, marriott:0.1111, hilton:0.15625 } },
     US:{ name:{zh:"美国 🇺🇸",en:"United States 🇺🇸"},
       note:{zh:"多数航空 1:1；国泰/阿联酋/JetBlue 0.8；Aeroméxico 1.6；希尔顿 1:2。达美/JetBlue 收联邦消费税。阿提哈德 2026/6/30 下线。",
@@ -414,8 +414,8 @@ const DATA = {
       tiers:{ list:["charge","standard"], labels:{charge:{zh:"Platinum Charge / Centurion",en:"Platinum Charge / Centurion"}, standard:{zh:"Platinum Reserve / 信用卡",en:"Platinum Reserve / credit cards"}}, default:"charge" },
       transfers:{ krisflyer:{charge:0.5,standard:0.4545}, asiamiles:{charge:0.5,standard:0.4545}, ba_avios:{charge:0.5,standard:0.4545}, qantas:{charge:0.5,standard:0.4545}, evaair:{charge:0.5,standard:0.4545}, malaysia:{charge:0.5,standard:0.4545}, thai:{charge:0.5,standard:0.4545}, emirates:{charge:0.4167,standard:0.3846}, marriott:1.0, hilton:1.25 } },
     AU:{ name:{zh:"澳大利亚 🇦🇺",en:"Australia 🇦🇺"},
-      note:{zh:"多数 3:1；Velocity/Qantas 2:1(0.5)、阿联酋 4:1(0.25)。Qantas 仅 Platinum Charge/Centurion。2025/12/15 大幅贬值，泰航移除。",
-            en:"Most 3:1; Velocity/Qantas 2:1 (0.5), Emirates 4:1 (0.25). Qantas only on Platinum Charge/Centurion. Major devaluation on 2025/12/15; Thai Airways removed."},
+      note:{zh:"多数 3:1；Velocity/Qantas 2:1(0.5)、阿联酋 4:1(0.25)。Qantas 仅 Platinum Charge/Centurion；非该卡可经 Everyday Rewards（5:4）再 2:1 转 Qantas。2025/12/15 大幅贬值，泰航移除。",
+            en:"Most 3:1; Velocity/Qantas 2:1 (0.5), Emirates 4:1 (0.25). Qantas only on Platinum Charge/Centurion; other cards can route via Everyday Rewards (5:4) then 2:1 to Qantas. Major devaluation on 2025/12/15; Thai Airways removed."},
       tiers:{ list:["charge","standard"], labels:{charge:{zh:"Platinum Charge / Centurion",en:"Platinum Charge / Centurion"}, standard:{zh:"其他 MR 卡",en:"Other MR cards"}}, default:"charge" },
       transfers:{ velocity:0.5, krisflyer:0.333, qantas:{charge:0.5,standard:null}, asiamiles:0.333, ba_avios:0.333, emirates:0.25, etihad:0.333, qatar_avios:0.333, malaysia:0.333, virginatlantic:0.333 } },
     CA:{ name:{zh:"加拿大 🇨🇦",en:"Canada 🇨🇦"},
@@ -440,12 +440,13 @@ const DATA = {
   alerts:{
     UK:[{p:"etihad", date:"2026-06-22", kind:"remove", note:{zh:"阿提哈德 Guest 转点在英区下线", en:"Etihad Guest transfers leaving the UK program"}}],
     US:[{p:"etihad", date:"2026-06-30", kind:"remove", note:{zh:"阿提哈德 Guest 转点在美区下线", en:"Etihad Guest transfers leaving the US program"}},
-        {p:"asiamiles", date:"2026-03-02", kind:"deval", note:{zh:"国泰 Asia Miles 已于 3 月贬值（5:4）", en:"Cathay Asia Miles devalued (5:4) in March"}}],
+        {p:"asiamiles", date:"2026-03-01", kind:"deval", note:{zh:"国泰 Asia Miles 已于 3/1 贬值（5:4）", en:"Cathay Asia Miles devalued (5:4) on 3/1"}}],
     CA:[{p:"etihad", date:"2026-06-20", kind:"remove", note:{zh:"阿提哈德 Guest 转点在加区下线", en:"Etihad Guest transfers left the Canada program"}}],
     AU:[{date:"2025-12-15", kind:"deval", note:{zh:"澳洲全线大幅贬值、泰航移除", en:"Australia major devaluation; Thai removed"}},
         {p:"etihad", date:"2026-06-23", kind:"remove", note:{zh:"阿提哈德 Guest 转点在澳区下线", en:"Etihad Guest transfers leaving the Australia program"}}],
     IN:[{p:"etihad", date:"2026-06-30", kind:"remove", note:{zh:"阿提哈德 Guest 转点在印度下线", en:"Etihad Guest transfers leaving India"}}],
-    SG:[{date:"2026-02-23", kind:"deval", note:{zh:"新加坡全线比例已贬值", en:"Singapore ratios devalued across the board"}}],
+    SG:[{date:"2026-02-23", kind:"deval", note:{zh:"新加坡全线比例已贬值", en:"Singapore ratios devalued across the board"}},
+        {p:"emirates", kind:"suspend", note:{zh:"阿联酋 Skywards 在新加坡暂停（比例须解除后才生效）", en:"Emirates Skywards suspended in SG (ratio applies once resumed)"}}],
     HK:[{p:"emirates", kind:"suspend", note:{zh:"阿联酋 Skywards 在港暂停", en:"Emirates Skywards suspended in HK"}}],
   },
   sources:[
