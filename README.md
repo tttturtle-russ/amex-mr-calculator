@@ -46,7 +46,7 @@ Honest by design: the cross-region figures are **FX-based estimates, clearly lab
 
 ## 技术 / Tech
 
-单文件 `index.html`，纯 vanilla HTML/CSS/JS，**零依赖、零构建**，字体本地化（无 CDN），托管于 GitHub Pages。Single static file, no framework, no backend, no tracking.
+核心是单文件 `index.html`，纯 vanilla HTML/CSS/JS，**零依赖、零构建**，字体本地化（无 CDN），托管于 GitHub Pages；外加 PWA 三件套（`manifest.webmanifest` / `sw.js` / 图标）。比例、兑换示例、预警等手工数据由 `node test.js` 做一致性自检，并在 GitHub Actions 上每次 push 自动跑。Single static page, no framework, no backend, no tracking; data integrity guarded by a dependency-free `node test.js` (also run in CI).
 
 ## License
 
