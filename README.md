@@ -46,7 +46,12 @@ Honest by design: the cross-region figures are **FX-based estimates, clearly lab
 
 ## 技术 / Tech
 
-核心是单文件 `index.html`，纯 vanilla HTML/CSS/JS，**零依赖、零构建**，字体本地化（无 CDN），托管于 GitHub Pages；外加 PWA 三件套（`manifest.webmanifest` / `sw.js` / 图标）。比例、兑换示例、预警等手工数据由 `node test.js` 做一致性自检，并在 GitHub Actions 上每次 push 自动跑。Single static page, no framework, no backend, no tracking; data integrity guarded by a dependency-free `node test.js` (also run in CI).
+核心是单文件 `index.html`，纯 vanilla HTML/CSS/JS，**零依赖、零构建**，字体本地化（无 CDN），托管于 GitHub Pages；外加 PWA 三件套（`manifest.webmanifest` / `sw.js` / 图标）。Single static page, no framework, no backend, no tracking.
+
+**数据维护（零依赖脚本）**：比例数据无公开 API、无法可靠自动抓取，因此走"机器跟踪 + 人工/AI 复核"两层——
+- `node test.js`：一致性自检（partner/region/ratio/alerts/redemptions 互相引用、双语完整），每次 push 在 CI 跑；
+- `node maintain.js`：按**今天的日期**提醒该动手的项（下线伙伴过期未清理、`lastVerified` 过旧、`recheck` 维护日历到期），每周一在 CI 定时跑、有到期项就变红邮件提醒；
+- 比例内容本身的复核用 AI 多代理工作流（联网 + 对抗式证伪）定期跑，产出 diff 供人工确认——不写死爬虫。
 
 ## License
 

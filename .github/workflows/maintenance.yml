@@ -1,0 +1,21 @@
+name: maintenance
+
+# 每周一跑数据维护检查；有到期项时 job 变红，GitHub 会邮件提醒仓库所有者。
+# 也可在 Actions 页手动触发。
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+
+jobs:
+  data-maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Data integrity (test.js)
+        run: node test.js
+      - name: Maintenance calendar (maintain.js)
+        run: node maintain.js

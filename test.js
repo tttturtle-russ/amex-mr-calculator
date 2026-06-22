@@ -1,40 +1,7 @@
 #!/usr/bin/env node
-/* 数据自检（零依赖）：从 index.html 抽出 DATA / REDEMPTIONS / I18N 三个纯字面量，
-   校验它们彼此一致。比例数据靠手工维护，这层测试能在改错时立刻报错。
-   跑法：node test.js  （CI 也跑这个） */
-const fs = require("fs");
-const path = require("path");
-
-const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf8");
-
-// 从源码里截取 `const NAME = { ... }` 的对象字面量（按花括号配平）
-function extractLiteral(src, name) {
-  const start = src.indexOf("const " + name + " =");
-  if (start < 0) throw new Error("找不到 " + name);
-  const open = src.indexOf("{", start);
-  let depth = 0, inStr = null, esc = false;
-  for (let i = open; i < src.length; i++) {
-    const ch = src[i];
-    if (inStr) {
-      if (esc) { esc = false; }
-      else if (ch === "\\") esc = true;
-      else if (ch === inStr) inStr = null;
-      continue;
-    }
-    if (ch === '"' || ch === "'" || ch === "`") { inStr = ch; continue; }
-    if (ch === "{") depth++;
-    else if (ch === "}") { depth--; if (depth === 0) return src.slice(open, i + 1); }
-  }
-  throw new Error(name + " 花括号未配平");
-}
-function evalLiteral(src, name) {
-  // 纯数据/文案字面量（I18N 含箭头函数，但无外部调用），eval 安全
-  return new Function("return (" + extractLiteral(src, name) + ")")();
-}
-
-const DATA = evalLiteral(html, "DATA");
-const REDEMPTIONS = evalLiteral(html, "REDEMPTIONS");
-const I18N = evalLiteral(html, "I18N");
+/* 数据自检（零依赖）：校验 DATA / REDEMPTIONS / I18N 三个字面量彼此一致。
+   比例数据靠手工维护，这层测试能在改错时立刻报错。跑法：node test.js（CI 也跑这个） */
+const { DATA, REDEMPTIONS, I18N } = require("./extract-data");
 
 const errs = [];
 const ok = (cond, msg) => { if (!cond) errs.push(msg); };
@@ -81,6 +48,12 @@ for (const [rk, arr] of Object.entries(DATA.alerts || {})) {
     if (a.date) ok(/^\d{4}-\d{2}-\d{2}$/.test(a.date) && !isNaN(Date.parse(a.date)),
       `alerts ${rk}[${i}]: date 非法 (${a.date})`);
   });
+}
+
+// --- recheck 维护日历 ---
+for (const r of DATA.recheck || []) {
+  ok(/^\d{4}-\d{2}-\d{2}$/.test(r.date) && !isNaN(Date.parse(r.date)), `recheck: date 非法 (${r.date})`);
+  ok(isBilingual(r.what), `recheck ${r.date}: what 不是双语`);
 }
 
 // --- redemptions ---
