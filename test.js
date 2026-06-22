@@ -57,6 +57,12 @@ for (const [rk, r] of Object.entries(DATA.regions)) {
   if (r.tiers) ok(Array.isArray(r.tiers.list) && r.tiers.default && r.tiers.list.includes(r.tiers.default),
     `region ${rk}: tiers 结构不完整`);
   if (r.cap) ok(DATA.partners[r.cap.partner], `region ${rk}: cap.partner 未知 (${r.cap.partner})`);
+  if (r.fee && r.fee.cash) {
+    const c = r.fee.cash;
+    ok(typeof c.amt === "number" && c.amt > 0, `region ${rk}: fee.cash.amt 非法 (${c.amt})`);
+    ok(c.cur in DATA.currencies, `region ${rk}: fee.cash.cur 不在 currencies (${c.cur})`);
+    ok(["transfer", "year"].includes(c.per), `region ${rk}: fee.cash.per 非法 (${c.per})`);
+  }
   for (const [pk, e] of Object.entries(r.transfers)) {
     ok(DATA.partners[pk], `region ${rk}: transfers 含未知 partner ${pk}`);
     const vals = (e == null || typeof e === "number") ? [e] : Object.values(e);

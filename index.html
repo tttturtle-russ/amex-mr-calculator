@@ -396,7 +396,7 @@ const DATA = {
   currencyOf:{ HK:"HKD", US:"USD", UK:"GBP", SG:"SGD", AU:"AUD", CA:"CAD", JP:"JPY", IN:"INR", TW:"TWD" },
 
   regions:{
-    HK:{ name:{zh:"香港 🇭🇰",en:"Hong Kong 🇭🇰"}, fee:{perConv:{zh:"HK$400/次",en:"HK$400/transfer"}, air:true},
+    HK:{ name:{zh:"香港 🇭🇰",en:"Hong Kong 🇭🇰"}, fee:{perConv:{zh:"HK$400/次",en:"HK$400/transfer"}, air:true, cash:{amt:400,cur:"HKD",per:"transfer"}},
       note:{zh:"航空统一 18,000 分 = 1,000 里程；每次航空兑换收 HK$400（Explorer/Centurion/公司卡豁免），Qantas 另加 HK$300。阿联酋暂停。",
             en:"All airlines at a flat 18,000 MR = 1,000 miles; HK$400 per airline transfer (waived on Explorer/Centurion/corporate cards), Qantas adds HK$300. Emirates suspended."},
       transfers:{ asiamiles:0.05556, krisflyer:0.05556, ba_avios:0.05556, evaair:0.05556, qantas:0.05556, malaysia:0.05556, virginatlantic:0.05556, marriott:0.1111, hilton:0.15625 } },
@@ -408,7 +408,7 @@ const DATA = {
       note:{zh:"多数航空 1:1；新航 3:2(0.667)、阿联酋 2:1(0.5)。希尔顿 1:2、万豪 2:3、雅高 3:1、丽笙 1:3。阿提哈德 2026/6/22 下线。无转点费。",
             en:"Most airlines 1:1; Singapore 3:2 (0.667), Emirates 2:1 (0.5). Hilton 1:2, Marriott 2:3, Accor 3:1, Radisson 1:3. Etihad ends 2026/6/22. No transfer fee."},
       transfers:{ ba_avios:1.0, iberia_avios:1.0, qatar_avios:1.0, virginatlantic:1.0, asiamiles:1.0, flyingblue:1.0, delta:1.0, qantas:1.0, sas:1.0, krisflyer:0.667, emirates:0.5, etihad:1.0, hilton:2.0, marriott:1.5, accor:0.333, radisson:3.0 } },
-    SG:{ name:{zh:"新加坡 🇸🇬",en:"Singapore 🇸🇬"}, fee:{perConv:{zh:"S$20.38/次(Rewards卡)",en:"S$20.38/transfer (Rewards card)"}, air:true, waiveTier:"charge"},
+    SG:{ name:{zh:"新加坡 🇸🇬",en:"Singapore 🇸🇬"}, fee:{perConv:{zh:"S$20.38/次(Rewards卡)",en:"S$20.38/transfer (Rewards card)"}, air:true, waiveTier:"charge", cash:{amt:20.38,cur:"SGD",per:"transfer"}},
       note:{zh:"比例分卡等级（Platinum Charge/Centurion 最优）。2026/2/23 全线贬值。航空转点需年费约 S$40.74（Platinum 系列豁免）；Rewards 卡每次 S$20.38。",
             en:"Ratios vary by card tier (Platinum Charge/Centurion best). Across-the-board devaluation on 2026/2/23. Airline transfers need an annual fee of ~S$40.74 (waived on Platinum series); Rewards cards pay S$20.38 per transfer."},
       tiers:{ list:["charge","standard"], labels:{charge:{zh:"Platinum Charge / Centurion",en:"Platinum Charge / Centurion"}, standard:{zh:"Platinum Reserve / 信用卡",en:"Platinum Reserve / credit cards"}}, default:"charge" },
@@ -422,7 +422,7 @@ const DATA = {
       note:{zh:"多数 1:1；法荷航 2026/1 升回 1:1。国泰/达美/阿提哈德 4:3(0.75)。万豪 5:6(1.2)。旧卡 “MR Select” 不能转航空。",
             en:"Most 1:1; Flying Blue back to 1:1 since 2026/1. Cathay/Delta/Etihad 4:3 (0.75). Marriott 5:6 (1.2). Legacy “MR Select” can't transfer to airlines."},
       transfers:{ aeroplan:1.0, flyingblue:1.0, ba_avios:1.0, asiamiles:0.75, delta:0.75, etihad:0.75, marriott:1.2, hilton:1.0 } },
-    JP:{ name:{zh:"日本 🇯🇵",en:"Japan 🇯🇵"}, fee:{perConv:{zh:"年费¥5,500",en:"¥5,500/yr"}, air:true}, cap:{partner:"ana",maxMiles:40000},
+    JP:{ name:{zh:"日本 🇯🇵",en:"Japan 🇯🇵"}, fee:{perConv:{zh:"年费¥5,500",en:"¥5,500/yr"}, air:true, cash:{amt:5500,cur:"JPY",per:"year"}}, cap:{partner:"ana",maxMiles:40000},
       note:{zh:"主力 ANA 1:1，但需加入「MR ANA 程序」年费 ¥5,500，且每自然年封顶 40,000 ANA 里程。JAL 非伙伴。",
             en:"Mainly ANA 1:1, but requires enrolling in the “MR ANA Program” (¥5,500/yr) and is capped at 40,000 ANA miles per calendar year. JAL is not a partner."},
       transfers:{ ana:1.0 } },
@@ -571,6 +571,12 @@ function feeTag(rk,pk,tier){
   if(r.fee.air && p.type!=="air") return "";
   if(r.fee.waiveTier && tier===r.fee.waiveTier) return "";
   return r.fee.perConv;
+}
+// 把现金手续费按实时汇率折成统一货币（USD），方便横向比较——仅 FX 换算，不抵扣里程、不做价值判断
+function feeUSDStr(rk){
+  const f=DATA.regions[rk].fee; if(!f || !f.cash) return "";
+  const usd = f.cash.amt / rate(f.cash.cur); if(!isFinite(usd) || usd<=0) return "";
+  return " ≈ $" + (usd<10 ? usd.toFixed(1) : Math.round(usd));
 }
 
 // 给定计划，算每个区可兑里程（本区=GT前；他区=GT后，按 retain 折算）
@@ -761,7 +767,7 @@ function renderFocus(routes, homeRoute, best){
       if(x===homeRoute) cmp=`<span class="muted">${t("baseline")}</span>`;
       else{ const d=Math.round((x.miles-base)/base*100); cmp=`<span class="${d>=0?'up':'down'}">${d>=0?'+':''}${d}%</span>`; }
     }
-    const notes = (x.fee?`<span class="tag warn">${L(x.fee)}</span>`:'')
+    const notes = (x.fee?`<span class="tag warn">${L(x.fee)}${feeUSDStr(x.rk)}</span>`:'')
       + (x.capped?`<span class="tag warn">${t("cap40k")}</span>`:'')
       + (!x.isHome && x.keep>1.0001 ? `<span class="tag theo">${t("theo")}</span>` : '')
       + alertTagFor(x.rk, state.program);
