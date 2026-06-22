@@ -22,6 +22,9 @@
 
 - 这笔分在本区直接兑换能换多少（**GT 前**），以及搬到其他每个地区后各能换多少（**GT 后**）；
 - 完整链路：原始 MR → GT 保留比例 → 搬过去剩多少 MR → 最终能兑多少里程/积分；
+- **这笔里程能换什么**：对每个计划列出常见兑换档位（如「香港→东京 单程商务 30,000」），用 ✓ / ×N / 百分比直观显示本区(GT前)与最佳区(GT后)够不够换；点任一档还能**倒推**各条路线要换它约需多少 MR、当前积分够哪些区——只列举、不估值；
+- **方案对比 · 收藏夹**：把不同地区 / 计划 / 数量的结果钉住并排对比多套搬分思路，收藏写进分享链接、可整组分享；
+- **贬值 / 变动预警**：对临近的转点比例下线、贬值（如阿提哈德下线、国泰贬值）在对应区/行打醒目标签，并在顶部用倒计时提示「X 天后生效」；
 - 一张总览表列出所有计划，本区对比**里程最多的地区**、按提升排序，能按航空/酒店筛选、点列头排序；
 - 跨区折算用**实时汇率**（来自 open.er-api.com，拿不到就用内置值，也可以手动改）；
 - 汇率、GT 保留比例、转点奖励 % 都可手动覆盖；任何方案都能生成**分享链接**；
@@ -35,6 +38,8 @@
 ## What it does (English)
 
 Pick your card's **issuing region** (HK / US / UK / SG / AU / CA / JP / IN / TW), enter an MR amount, and the tool lists — for ~27 airline & hotel transfer partners (Asia Miles, KrisFlyer, Avios, Aeroplan, ANA, Flying Blue, Marriott, Hilton, …) — how many miles/points you'd get in **each region**, comparing **redeeming at home (pre-GT)** vs. **after a cross-region Global Card Transfer (post-GT)**.
+
+A **redemption-examples** panel grounds the abstract numbers in real awards (e.g. "HKG→Tokyo business one-way, 30,000"), showing with ✓ / ×N / a percentage whether your pre-GT and best post-GT results cover each award; tap a row to **back-calculate** how many MR each route needs for it and which regions your balance already covers — listed, never valued. A **pin & compare** panel lets you stick several region / program / amount scenarios side by side; pins are encoded into the share link so a whole comparison can be shared. **Devaluation / change alerts** flag upcoming partner removals and ratio devaluations with a countdown ("in X days") on the affected region and row.
 
 Honest by design: the cross-region figures are **FX-based estimates, clearly labeled** (Amex publishes no official formula); it gives **no monetary valuation** and **never picks a "best" option for you** — it enumerates every route so you decide. FX rate, per-route retain ratio, and a transfer-bonus % are all editable.
 

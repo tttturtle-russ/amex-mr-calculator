@@ -210,6 +210,32 @@
     .filterbar{gap:10px}
     .filterbar select{min-width:0; flex:1 1 100%}
   }
+
+  /* 兑换示例 · 舱位标签 */
+  .tag.econ{background:rgba(127,202,187,.10); color:var(--aqua); border:1px solid rgba(127,202,187,.25)}
+  .tag.biz{background:rgba(232,152,122,.12); color:var(--coral-bright); border:1px solid rgba(232,152,122,.3)}
+  .tag.first{background:rgba(207,161,95,.14); color:var(--warn); border:1px solid rgba(207,161,95,.3)}
+  .refbar{display:flex; gap:8px 18px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; color:var(--muted); margin:-4px 0 14px; line-height:1.5}
+  .refbar b{color:var(--ink)}
+  .emptyhint{font-size:12.5px; color:var(--muted); padding:12px 2px; line-height:1.55}
+  /* 方案对比 · 收藏 */
+  .rmv{font-family:var(--mono); cursor:pointer; color:var(--muted); border:1px solid var(--border); border-radius:6px; padding:3px 9px; min-height:30px; background:transparent; font-size:12px; transition:.15s}
+  .rmv:hover{border-color:var(--down); color:var(--down); background:rgba(224,114,107,.08)}
+  td.rmvcell{text-align:right; padding-right:11px}
+  /* 贬值 / 变动预警 */
+  .alertstrip{display:flex; flex-direction:column; gap:7px; margin:0 0 18px}
+  .alertstrip .al{font-family:var(--mono); font-size:12.5px; line-height:1.45; padding:9px 13px; border-radius:10px;
+    border:1px solid rgba(207,161,95,.32); background:rgba(207,161,95,.08); color:var(--warn)}
+  .alertstrip .al b{color:var(--coral-bright)}
+  .tag.past{background:rgba(255,255,255,.04); color:var(--muted); border:1px solid var(--border-soft)}
+  /* 兑换示例 · 倒推 */
+  tbody tr.rsel{background:rgba(232,152,122,.10)!important}
+  tbody tr.rsel td:first-child{box-shadow:inset 3px 0 0 var(--coral)}
+  .rd-box{margin-top:12px; padding:13px 15px; border:1px solid var(--border); border-radius:11px;
+    background:rgba(127,202,187,.04); font-size:13px; line-height:1.75; color:var(--ink-dim)}
+  .rd-box .rd-t{font-weight:600; color:var(--ink); margin-bottom:5px; font-family:var(--cjk)}
+  .rd-box b{color:var(--aqua-bright); font-family:var(--mono)}
+  .rd-box .code{margin-right:4px}
 </style>
 </head>
 <body>
@@ -248,11 +274,13 @@
         <option value="fx" data-i18n="optFx">纯实时汇率（理论值）</option>
       </select></label>
       <label class="fld"><span data-i18n="lblBonus">· 转点奖励 %</span><input id="bonus" type="number" min="0" step="5" value="0"></label>
-      <button class="mini" id="resetBtn" type="button" data-i18n="resetBtn" style="margin-left:auto; align-self:flex-end">重置</button>
+      <button class="mini" id="pinBtn" type="button" data-i18n="pinBtn" style="margin-left:auto; align-self:flex-end">收藏方案</button>
+      <button class="mini" id="resetBtn" type="button" data-i18n="resetBtn" style="align-self:flex-end">重置</button>
       <button class="mini" id="shareBtn" type="button" data-i18n="shareBtn" style="align-self:flex-end">复制方案链接</button>
     </div>
     <div class="hint" data-i18n="hint">跨区折算按汇率近似——Amex 不公开官方公式，数字仅供参考；可在下方「数据与假设」里按真实情况改每个区的 GT 保留比例。转点奖励按你填的数对当前计划全区生效，活动通常分区，请自行确认。</div>
     <div id="headline" class="headline"></div>
+    <div id="alertStrip" class="alertstrip" style="display:none"></div>
     <div class="secttl" id="secFocus">该计划在各区可兑里程（本区=GT前基准，他区=GT后）</div>
     <div class="tbl-scroll">
       <table id="focusTable"><thead><tr>
@@ -275,9 +303,37 @@
     </div>
   </section>
 
-  <!-- 数据 -->
+  <!-- 兑换示例 -->
   <section class="card reveal" style="--d:.18s">
-    <h2><span class="n">3</span><span data-i18n="card3">数据与假设 · 可编辑</span></h2>
+    <h2><span class="n">3</span><span data-i18n="card3r">这笔里程能换什么 · 兑换示例</span></h2>
+    <div class="hint" data-i18n="redempHint">下面是该计划常见的兑换档位（多为单程，里程数以航司官方奖励表为准，常随舱位 / 航线 / 季节浮动）。✓ 表示当前结果够换、×N 表示约可换几次，百分比表示离够还差多少。只列举、不估值。</div>
+    <div class="refbar" id="redempRef"></div>
+    <div class="tbl-scroll" id="redempWrap">
+      <table id="redempTable"><thead><tr>
+        <th data-i18n="redempH1">兑换示例</th><th data-i18n="redempH2">约需</th><th data-i18n="redempH3">本区 GT前</th><th data-i18n="redempH4">最佳 GT后</th>
+      </tr></thead><tbody id="redempBody"></tbody></table>
+    </div>
+    <div class="countnote" id="redempTargetHint" data-i18n="redempTargetHint">点任一档，倒推出各条路线要换它约需多少 MR。</div>
+    <div id="redempDetail" class="rd-box" style="display:none"></div>
+    <div class="emptyhint" id="redempEmpty" style="display:none"></div>
+  </section>
+
+  <!-- 方案对比 / 收藏 -->
+  <section class="card reveal" style="--d:.22s">
+    <h2><span class="n">4</span><span data-i18n="card4">方案对比 · 收藏夹</span></h2>
+    <div class="hint" data-i18n="pinHint">点上方「收藏方案」把当前地区 / 计划 / 数量的结果钉在这里，并排对比多套搬分思路；收藏会写进分享链接，可整组分享。</div>
+    <div class="emptyhint" id="pinEmpty" data-i18n="pinEmpty">还没有收藏的方案。在上方调好参数后点「收藏方案」即可加入对比。</div>
+    <div class="tbl-scroll" id="pinTableWrap" style="display:none">
+      <table id="pinTable"><thead><tr>
+        <th data-i18n="pinH1">方案（地区 · 计划）</th><th data-i18n="pinH2">MR 数量</th><th data-i18n="pinH3">本区 GT前</th><th data-i18n="pinH4">最佳 GT后</th><th data-i18n="pinH5">提升</th><th></th>
+      </tr></thead><tbody id="pinBody"></tbody></table>
+    </div>
+    <button class="mini" id="pinClear" type="button" data-i18n="pinClear" style="display:none; margin-top:12px">清空收藏</button>
+  </section>
+
+  <!-- 数据 -->
+  <section class="card reveal" style="--d:.26s">
+    <h2><span class="n">5</span><span data-i18n="card3">数据与假设 · 可编辑</span></h2>
     <details class="sub">
       <summary data-i18n="fxSummary">汇率（1 USD = ? 当地）— 驱动「GT 折算」，可手动覆盖</summary>
       <div class="body">
@@ -368,6 +424,16 @@ const DATA = {
       transfers:{ asiamiles:0.8, krisflyer:1.0, evaair:1.0, thai:1.0, malaysia:1.0, marriott:0.9, hilton:1.25 } },
   },
   lastVerified:"2026-06",
+  // 已知的转点比例变动 / 下线（date 可省=长期状态）。kind: remove|deval|suspend|improve
+  alerts:{
+    UK:[{p:"etihad", date:"2026-06-22", kind:"remove", note:{zh:"阿提哈德 Guest 转点在英区下线", en:"Etihad Guest transfers leaving the UK program"}}],
+    US:[{p:"etihad", date:"2026-06-30", kind:"remove", note:{zh:"阿提哈德 Guest 转点在美区下线", en:"Etihad Guest transfers leaving the US program"}},
+        {p:"asiamiles", date:"2026-03-02", kind:"deval", note:{zh:"国泰 Asia Miles 已于 3 月贬值", en:"Cathay Asia Miles devalued in March"}}],
+    TW:[{p:"asiamiles", date:"2026-03-01", kind:"deval", note:{zh:"国泰已贬为 5:4（0.8）", en:"Cathay devalued to 5:4 (0.8)"}}],
+    SG:[{date:"2026-02-23", kind:"deval", note:{zh:"新加坡全线比例已贬值", en:"Singapore ratios devalued across the board"}}],
+    AU:[{date:"2025-12-15", kind:"deval", note:{zh:"澳洲全线大幅贬值、泰航移除", en:"Australia major devaluation; Thai removed"}}],
+    HK:[{p:"emirates", kind:"suspend", note:{zh:"阿联酋 Skywards 在港暂停", en:"Emirates Skywards suspended in HK"}}],
+  },
   sources:[
     [{zh:"跨区 Global Card Transfer（电话办、约一年一次、按汇率折算）",en:"Cross-region Global Card Transfer (by phone, ~once a year, FX-adjusted)"},{zh:"pointhacks.com.au / princeoftravel.com / americanexpress.com 各区 Moving Abroad 页",en:"pointhacks.com.au / princeoftravel.com / americanexpress.com regional Moving Abroad pages"}],
     [{zh:"US 转点伙伴与 2026/3 国泰贬值",en:"US transfer partners & the 2026/3 Cathay devaluation"},{zh:"upgradedpoints.com、frequentmiler.com、Amex 官方伙伴页",en:"upgradedpoints.com, frequentmiler.com, Amex official partner pages"}],
@@ -378,12 +444,80 @@ const DATA = {
   ],
 };
 
+/* ============================================================
+   兑换示例（按里程计划，非按 Amex 地区）：m = 该奖位常见所需里程/积分
+   均为「单程·淡季/标准位」典型值，随舱位/航线/季节浮动，以航司官方奖励表为准。
+   c = econ | biz | first | hotel（仅用于标签）。这是示例库，不是估值。
+   ============================================================ */
+const REDEMPTIONS = {
+  asiamiles:[
+    {r:{zh:"香港 → 东京 · 单程",en:"HKG → Tokyo · one-way"}, m:15000, c:"econ"},
+    {r:{zh:"香港 → 东京 · 单程",en:"HKG → Tokyo · one-way"}, m:30000, c:"biz"},
+    {r:{zh:"香港 → 新加坡 · 单程",en:"HKG → Singapore · one-way"}, m:13000, c:"econ"},
+    {r:{zh:"香港 → 伦敦 · 单程",en:"HKG → London · one-way"}, m:30000, c:"econ"},
+    {r:{zh:"香港 → 伦敦 · 单程",en:"HKG → London · one-way"}, m:70000, c:"biz"},
+    {r:{zh:"香港 → 美东 · 单程",en:"HKG → US East · one-way"}, m:110000, c:"biz"},
+  ],
+  krisflyer:[
+    {r:{zh:"新加坡 → 巴厘岛 · 单程(Saver)",en:"SIN → Bali · one-way (Saver)"}, m:13500, c:"econ"},
+    {r:{zh:"新加坡 → 东京 · 单程(Saver)",en:"SIN → Tokyo · one-way (Saver)"}, m:25000, c:"econ"},
+    {r:{zh:"新加坡 → 东京 · 单程(Saver)",en:"SIN → Tokyo · one-way (Saver)"}, m:46000, c:"biz"},
+    {r:{zh:"新加坡 → 伦敦 · 单程(Saver)",en:"SIN → London · one-way (Saver)"}, m:99000, c:"biz"},
+    {r:{zh:"新加坡 → 美西 · 单程(Saver)",en:"SIN → US West · one-way (Saver)"}, m:99000, c:"biz"},
+  ],
+  ba_avios:[
+    {r:{zh:"短途 <650mi · 单程",en:"Short-haul <650mi · one-way"}, m:5000, c:"econ"},
+    {r:{zh:"伦敦 → 纽约 · 单程(峰外)",en:"London → New York · one-way (off-peak)"}, m:50000, c:"biz"},
+    {r:{zh:"伦敦 → 迪拜/多哈 · 单程",en:"London → Dubai/Doha · one-way"}, m:70000, c:"biz"},
+  ],
+  qatar_avios:[
+    {r:{zh:"中东 → 东南亚 · 单程",en:"Mideast → SE Asia · one-way"}, m:17000, c:"econ"},
+    {r:{zh:"多哈 → 伦敦 · 单程(Qsuite)",en:"Doha → London · one-way (Qsuite)"}, m:70000, c:"biz"},
+  ],
+  aeroplan:[
+    {r:{zh:"北美短途 · 单程",en:"N. America short-haul · one-way"}, m:6000, c:"econ"},
+    {r:{zh:"北美 → 欧洲 · 单程",en:"N. America → Europe · one-way"}, m:60000, c:"biz"},
+    {r:{zh:"北美 → 亚洲 · 单程",en:"N. America → Asia · one-way"}, m:75000, c:"biz"},
+    {r:{zh:"北美 → 亚洲 · 单程",en:"N. America → Asia · one-way"}, m:140000, c:"first"},
+  ],
+  ana:[
+    {r:{zh:"日本 → 北美 · 往返(淡季)",en:"Japan → N. America · round-trip (low)"}, m:40000, c:"econ"},
+    {r:{zh:"日本 → 欧洲 · 往返(淡季)",en:"Japan → Europe · round-trip (low)"}, m:88000, c:"biz"},
+  ],
+  flyingblue:[
+    {r:{zh:"欧洲境内 · 单程(促销更低)",en:"Within Europe · one-way (promos lower)"}, m:12500, c:"econ"},
+    {r:{zh:"欧洲 → 北美 · 单程",en:"Europe → N. America · one-way"}, m:62500, c:"biz"},
+  ],
+  qantas:[
+    {r:{zh:"澳洲短途 · 单程",en:"Within Australia short-haul · one-way"}, m:8000, c:"econ"},
+    {r:{zh:"澳洲 → 东南亚 · 单程",en:"Australia → SE Asia · one-way"}, m:68400, c:"biz"},
+    {r:{zh:"澳洲 → 美西 · 单程",en:"Australia → US West · one-way"}, m:108400, c:"biz"},
+  ],
+  virginatlantic:[
+    {r:{zh:"伦敦 → 美东(VS) · 单程",en:"London → US East (VS) · one-way"}, m:47500, c:"biz"},
+    {r:{zh:"美国 → 东京(ANA) · 往返",en:"US → Tokyo (ANA) · round-trip"}, m:90000, c:"biz"},
+  ],
+  emirates:[
+    {r:{zh:"迪拜 → 欧洲 · 单程",en:"Dubai → Europe · one-way"}, m:72500, c:"biz"},
+    {r:{zh:"迪拜 → 美东 · 单程",en:"Dubai → US East · one-way"}, m:105000, c:"biz"},
+  ],
+  marriott:[
+    {r:{zh:"标准酒店 · 1 晚(约 35k 档)",en:"Standard hotel · 1 night (~35k)"}, m:35000, c:"hotel"},
+    {r:{zh:"高端酒店 · 1 晚(约 85k 档)",en:"Premium hotel · 1 night (~85k)"}, m:85000, c:"hotel"},
+    {r:{zh:"连住 5 晚送 1（付 4 晚约）",en:"5th-night-free · pay 4 (~)"}, m:140000, c:"hotel"},
+  ],
+  hilton:[
+    {r:{zh:"中端酒店 · 1 晚(约 40k)",en:"Mid-tier hotel · 1 night (~40k)"}, m:40000, c:"hotel"},
+    {r:{zh:"高端酒店 · 1 晚(约 95k)",en:"Premium hotel · 1 night (~95k)"}, m:95000, c:"hotel"},
+  ],
+};
+
 /* ============================== 状态 ============================== */
 const state = {
   lang:"zh",
   region:"HK", tier:"charge", amount:100000, program:"asiamiles", convModel:"cap",
   ovType:"all", ovSort:{key:"uplift", dir:"desc"},
-  bonus:{}, retainOverride:{},
+  bonus:{}, retainOverride:{}, pins:[], redempTarget:null,
   fxOverride:{}, fxLive:{}, fxStatus:"loading", fxUpdated:"",
 };
 
@@ -499,6 +633,23 @@ function initControls(){
   });
 
   $("resetBtn").onclick = doReset;
+
+  // 方案对比 / 收藏
+  $("pinBtn").onclick = doPin;
+  $("pinClear").onclick = ()=>{ state.pins=[]; renderPins(); if(_booted) syncPersist(); };
+  $("pinBody").addEventListener("click", ev=>{
+    const b=ev.target.closest("button[data-i]"); if(!b) return;
+    state.pins.splice(+b.dataset.i, 1); renderPins(); if(_booted) syncPersist();
+  });
+
+  // 兑换示例：点行 → 倒推该档（再点同一行取消）
+  $("redempBody").addEventListener("click", ev=>{
+    const tr=ev.target.closest("tr[data-idx]"); if(!tr) return;
+    const i=+tr.dataset.idx, cur=state.redempTarget;
+    state.redempTarget = (cur && cur.pk===state.program && cur.i===i) ? null : {pk:state.program, i};
+    render();
+  });
+
   buildDataPanel();
 }
 
@@ -523,8 +674,11 @@ function render(){
   const homeRoute = routes.find(x=>x.isHome) || null;
   const best = routes[0] || null;
   renderHeadline(routes, homeRoute, best);
+  renderAlertStrip(routes);
   renderFocus(routes, homeRoute, best);
   renderOverview();
+  renderRedemptions(routes, homeRoute, best);
+  renderPins();
   if(_booted) syncPersist();
 }
 
@@ -586,7 +740,8 @@ function renderFocus(routes, homeRoute, best){
     }
     const notes = (x.fee?`<span class="tag warn">${L(x.fee)}</span>`:'')
       + (x.capped?`<span class="tag warn">${t("cap40k")}</span>`:'')
-      + (!x.isHome && x.keep>1.0001 ? `<span class="tag theo">${t("theo")}</span>` : '');
+      + (!x.isHome && x.keep>1.0001 ? `<span class="tag theo">${t("theo")}</span>` : '')
+      + alertTagFor(x.rk, state.program);
     const tags = (x.isHome?`<span class="tag home">${t("tagHome")}</span>`:'')
       + (x===best && !x.isHome ?`<span class="tag best">${t("tagMost")}</span>`:'');
     const mrTxt = x.isHome ? `<span class="muted">${nf(x.mr)}<span class="small">${t("rawSuffix")}</span></span>` : nf(x.mr);
@@ -662,6 +817,175 @@ function renderOverview(){
   $("overviewTable").querySelector("tbody").innerHTML = html;
 }
 
+/* ===================== 变动 / 贬值预警 ===================== */
+function dayDiff(ymd){                                  // 距今天数：正=未来，负=过去
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(ymd||""); if(!m) return null;
+  const target=new Date(+m[1], +m[2]-1, +m[3]);
+  const now=new Date(); now.setHours(0,0,0,0);
+  return Math.round((target-now)/86400000);
+}
+const mdLabel = ymd=>{ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(ymd||""); return m? (+m[2])+"/"+(+m[3]) : ""; };
+function alertInfo(a){                                  // 归类：soon(90天内) future recent(过去150天内) old undated
+  if(!a.date) return {bucket:"undated", days:null};
+  const d=dayDiff(a.date);
+  if(d>=0 && d<=90) return {bucket:"soon", days:d};
+  if(d>90) return {bucket:"future", days:d};
+  if(d<0 && d>=-150) return {bucket:"recent", days:d};
+  return {bucket:"old", days:d};
+}
+const _bucketRank = {soon:0, future:1, undated:2, recent:3, old:9};
+function relevantAlerts(rk, pk){
+  const arr = DATA.alerts && DATA.alerts[rk]; if(!arr) return [];
+  return arr.filter(a=> !a.p || a.p===pk).map(a=>({a, ...alertInfo(a)}))
+    .filter(o=> o.bucket!=="old")
+    .sort((x,y)=> _bucketRank[x.bucket]-_bucketRank[y.bucket]);
+}
+function alertTagFor(rk, pk){                           // 焦点表行内的小标签（取最紧迫一条）
+  const o = relevantAlerts(rk,pk)[0]; if(!o) return "";
+  const k = t("kind_"+o.a.kind), ttl = L(o.a.note);
+  if(o.bucket==="soon")   return `<span class="tag warn" title="${ttl}">${t("alTagSoon", mdLabel(o.a.date), k)}</span>`;
+  if(o.bucket==="future") return `<span class="tag warn" title="${ttl}">${mdLabel(o.a.date)} ${k}</span>`;
+  return `<span class="tag past" title="${ttl}">${o.bucket==="undated"? k : t("alTagPast", k)}</span>`;
+}
+function renderAlertStrip(routes){                      // 顶部预警条：当前计划在各可达区即将发生的变动
+  const el=$("alertStrip"); if(!el) return;
+  const pk=state.program, seen=new Set(), items=[];
+  for(const r of routes){
+    for(const o of relevantAlerts(r.rk, pk)){
+      if(o.bucket!=="soon" && o.bucket!=="future") continue;
+      const key=r.rk+"|"+o.a.date+"|"+o.a.kind+"|"+(o.a.p||"");
+      if(seen.has(key)) continue; seen.add(key);
+      items.push({rk:r.rk, o});
+    }
+  }
+  items.sort((a,b)=>(a.o.days||0)-(b.o.days||0));
+  el.innerHTML = items.map(it=>{
+    const d=it.o.days;
+    const when = d===0? t("whenToday") : d===1? t("whenTomorrow") : t("whenDays", d);
+    return `<div class="al">⚠ ${t("alBanner", L(it.o.a.note), rn(it.rk), when)}</div>`;
+  }).join("");
+  el.style.display = items.length? "" : "none";
+}
+
+/* ===================== 兑换示例（这笔里程能换什么） ===================== */
+// 覆盖判定：当前里程够不够这个奖位 → ✓×N / 百分比，仅陈述可行性，不估值
+function coverCell(miles, cost){
+  if(miles==null || miles<=0 || cost<=0) return `<span class="muted">—</span>`;
+  if(miles>=cost){ const n=Math.floor(miles/cost); return `<span class="up">✓${n>1?" ×"+n:""}</span>`; }
+  return `<span class="down">${Math.round(miles/cost*100)}%</span>`;
+}
+function renderRedemptions(routes, homeRoute, best){
+  const body=$("redempBody"), wrap=$("redempWrap"), empty=$("redempEmpty"), detail=$("redempDetail"), tHint=$("redempTargetHint");
+  if(!body) return;
+  const u=unit(state.program);
+  const homeM = homeRoute? homeRoute.miles : null;
+  const bestM = best? best.miles : null;
+  $("redempRef").innerHTML = t("redempRef",
+    homeM==null? t("naWord") : nf(Math.round(homeM)),
+    bestM==null? t("naWord") : nf(Math.round(bestM)),
+    rn(best? best.rk : state.region), u);
+  const list = REDEMPTIONS[state.program];
+  if(!list || !list.length){
+    wrap.style.display="none"; empty.style.display="block";
+    empty.textContent = t("redempEmpty", L(DATA.partners[state.program].name));
+    if(detail) detail.style.display="none";
+    if(tHint) tHint.style.display="none";
+    return;
+  }
+  wrap.style.display=""; empty.style.display="none";
+  if(tHint) tHint.style.display="";
+  const sel = (state.redempTarget && state.redempTarget.pk===state.program) ? state.redempTarget.i : -1;
+  body.innerHTML = list.map((x,i)=>`<tr class="clk${i===sel?' rsel':''}" data-idx="${i}">
+      <td>${L(x.r)}<span class="tag ${x.c}">${t("cabin_"+x.c)}</span></td>
+      <td>${nf(x.m)}</td>
+      <td>${coverCell(homeM, x.m)}</td>
+      <td>${coverCell(bestM, x.m)}</td>
+    </tr>`).join("");
+  // 倒推：换这一档，各路线约需多少 MR + 当前积分够哪些区
+  if(detail){
+    if(sel>=0 && list[sel]){
+      const x=list[sel], lines=[];
+      lines.push(`<div class="rd-t">${t("rdTarget", L(x.r), nf(x.m), u)}</div>`);
+      if(homeRoute){
+        const need=Math.ceil(x.m/(homeRoute.ratio*(1+homeRoute.bonus)));
+        lines.push(`<div>· ${t("rdHome", nf(need))}</div>`);
+      } else lines.push(`<div>· ${t("rdHomeNo")}</div>`);
+      if(best && !best.isHome){
+        const need=Math.ceil(x.m/(best.keep*best.ratio*(1+best.bonus)));
+        lines.push(`<div>· ${t("rdBest", rn(best.rk), nf(need))}</div>`);
+      }
+      const ok = routes.filter(r=>r.miles>=x.m).map(r=>`<span class="code">${r.rk}</span>`);
+      lines.push(`<div>· ${t("rdNow", nf(state.amount), ok.length? ok.join(" ") : t("rdNone"))}</div>`);
+      detail.innerHTML=lines.join(""); detail.style.display="";
+    } else { detail.style.display="none"; detail.innerHTML=""; }
+  }
+}
+
+/* ===================== 方案对比 / 收藏夹 ===================== */
+// 收藏 = 当前结果的快照（记下输入与算出的里程，不随后续改动变化）
+function currentPin(){
+  const routes = programRoutes(state.program);
+  if(!routes.length || state.amount<=0) return null;
+  const home = routes.find(x=>x.isHome) || null, best = routes[0];
+  return {
+    r:state.region, t:DATA.regions[state.region].tiers? state.tier : "", p:state.program,
+    a:state.amount, m:state.convModel, b:bonusOf(state.program),
+    hm: home? Math.round(home.miles) : null, bm: Math.round(best.miles), br: best.rk,
+    ty: DATA.partners[state.program].type,
+  };
+}
+const pinKey = p => [p.r,p.t,p.p,p.a,p.m,p.b].join("|");
+function flashPin(msg){
+  const b=$("pinBtn"); if(!b) return;
+  b.textContent=msg; setTimeout(()=>{ b.textContent=t("pinBtn"); }, 1300);
+}
+function doPin(){
+  const p=currentPin();
+  if(!p){ flashPin(t("pinNone")); return; }
+  if(state.pins.some(x=>pinKey(x)===pinKey(p))){ flashPin(t("pinDup")); return; }
+  if(state.pins.length>=8) state.pins.shift();
+  state.pins.push(p);
+  renderPins(); if(_booted) syncPersist(); flashPin(t("pinned"));
+}
+function renderPins(){
+  const body=$("pinBody"); if(!body) return;
+  const has=state.pins.length>0;
+  $("pinTableWrap").style.display = has? "" : "none";
+  $("pinEmpty").style.display = has? "none" : "block";
+  $("pinClear").style.display = has? "" : "none";
+  if(!has) return;
+  body.innerHTML = state.pins.map((p,i)=>{
+    const up = (p.hm!=null && p.hm>0)? Math.round((p.bm/p.hm-1)*100) : null;
+    const upTxt = up==null? `<span class="muted">—</span>` : `<span class="${up>=0?'up':'down'}">${up>=0?'+':''}${up}%</span>`;
+    const bonusTxt = p.b>0? `<span class="tag bonus">+${p.b}%</span>` : "";
+    const hotelTxt = p.ty==="hotel"? `<span class="tag hotel">${t("tagHotel")}</span>` : "";
+    return `<tr>
+      <td><span class="code">${p.r}</span>${L(DATA.partners[p.p].name)}${hotelTxt}${bonusTxt}</td>
+      <td>${nf(p.a)}</td>
+      <td>${p.hm==null? `<span class="muted">${t("notSupported")}</span>` : nf(p.hm)}</td>
+      <td><b>${nf(p.bm)}</b> <span class="code">${p.br}</span></td>
+      <td>${upTxt}</td>
+      <td class="rmvcell"><button class="rmv" type="button" data-i="${i}" aria-label="${t("removePin")}" title="${t("removePin")}">✕</button></td>
+    </tr>`;
+  }).join("");
+}
+// 收藏编码进分享链接：每条用 ~ 分字段、; 分条目
+function encodePins(){
+  return state.pins.map(p=>[p.r,p.t,p.p,p.a,p.m,p.b,p.hm==null?"":p.hm,p.bm,p.br,p.ty].join("~")).join(";");
+}
+function decodePins(str){
+  const out=[]; if(!str) return out;
+  for(const seg of String(str).split(";")){
+    const f=seg.split("~"); if(f.length<10) continue;
+    const r=f[0], p=f[2];
+    if(!DATA.regions[r] || !DATA.partners[p]) continue;
+    out.push({ r, t:f[1]||"", p, a:Math.max(0,+f[3]||0), m:(f[4]==="fx"?"fx":"cap"), b:Math.max(0,+f[5]||0),
+      hm:(f[6]===""? null : Math.round(+f[6]||0)), bm:Math.round(+f[7]||0),
+      br:(DATA.regions[f[8]]? f[8] : r), ty:(f[9]==="hotel"?"hotel":"air") });
+  }
+  return out.slice(0,8);
+}
+
 /* ============================== 数据面板 ============================== */
 function buildDataPanel(){
   renderFxGrid();
@@ -731,6 +1055,7 @@ function snapshot(){
   const b=enc(state.bonus); if(b) s.b=b;
   const ro=enc(state.retainOverride); if(ro) s.ro=ro;
   const fx=enc(state.fxOverride); if(fx) s.fx=fx;
+  const pn=encodePins(); if(pn) s.pn=pn;
   return s;
 }
 function syncPersist(){
@@ -760,6 +1085,7 @@ function applySnapshot(s){
   state.bonus=parseMap(s.b);
   state.retainOverride=parseMap(s.ro);
   state.fxOverride=parseMap(s.fx);
+  state.pins=decodePins(s.pn);
 }
 function restoreState(){
   let s=null;
@@ -790,7 +1116,7 @@ function doReset(){
   if(typeof confirm==="function" && !confirm(t("resetConfirm"))) return;
   state.region="HK"; state.tier="charge"; state.amount=100000; state.program="asiamiles";
   state.convModel="cap"; state.ovType="all"; state.ovSort={ key:"uplift", dir:"desc" };
-  state.bonus={}; state.retainOverride={}; state.fxOverride={};
+  state.bonus={}; state.retainOverride={}; state.fxOverride={}; state.pins=[]; state.redempTarget=null;
   try{ localStorage.removeItem(LS_STATE); }catch(e){}
   try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){}
   $("amount").value=state.amount;
@@ -922,6 +1248,47 @@ const I18N = {
               en:(ym,n)=>`Data checked · ${ym}`+(n>=6?` · ~${n} months since last update, please verify`:"") },
   sourcesNote:{ zh:"跨区 GT 按汇率折算为近似，Amex 未公开官方公式，最终须致电确认。手续费为现金费、不抵扣里程。",
                 en:"Cross-region GT is an FX-based approximation; Amex publishes no official formula, so confirm by phone. Fees are cash charges and don't reduce miles." },
+
+  card3r:{ zh:"这笔里程能换什么 · 兑换示例", en:"What can these miles get · Redemption examples" },
+  redempHint:{ zh:"下面是该计划常见的兑换档位（多为单程，里程数以航司官方奖励表为准，常随舱位 / 航线 / 季节浮动）。✓ 表示当前结果够换、×N 表示约可换几次，百分比表示离够还差多少。只列举、不估值。",
+               en:"Common award levels for this program (mostly one-way; mileage is per the airline's own award chart and varies by cabin / route / season). ✓ means your result covers it, ×N ≈ how many times, a percentage shows how far short. We list, we don't value." },
+  redempRef:{ zh:(h,b,reg,u)=>`参考：本区(GT前) <b>${h}</b> ${u} · 最佳(GT后 · ${reg}) <b>${b}</b> ${u}`,
+              en:(h,b,reg,u)=>`Reference: home pre-GT <b>${h}</b> ${u} · best post-GT (${reg}) <b>${b}</b> ${u}` },
+  redempH1:{ zh:"兑换示例", en:"Example award" }, redempH2:{ zh:"约需", en:"~Needs" },
+  redempH3:{ zh:"本区 GT前", en:"Home pre-GT" }, redempH4:{ zh:"最佳 GT后", en:"Best post-GT" },
+  redempEmpty:{ zh:(name)=>`${name} 暂无内置兑换示例——其奖励表与航线众多，欢迎到 GitHub 提交常用档位一起完善。`,
+                en:(name)=>`No built-in award examples for ${name} yet — its chart and routes are vast; PRs with common levels are welcome on GitHub.` },
+  cabin_econ:{ zh:"经济", en:"Econ" }, cabin_biz:{ zh:"商务", en:"Biz" }, cabin_first:{ zh:"头等", en:"First" }, cabin_hotel:{ zh:"住宿", en:"Stay" },
+  naWord:{ zh:"不支持", en:"N/A" },
+
+  card4:{ zh:"方案对比 · 收藏夹", en:"Compare · Saved scenarios" },
+  pinBtn:{ zh:"收藏方案", en:"Pin scenario" },
+  pinHint:{ zh:"点上方「收藏方案」把当前地区 / 计划 / 数量的结果钉在这里，并排对比多套搬分思路；收藏会写进分享链接，可整组分享。",
+            en:"Hit “Pin scenario” above to stick the current region / program / amount result here and compare several transfer ideas side by side; pins go into the share link so you can share the whole set." },
+  pinEmpty:{ zh:"还没有收藏的方案。在上方调好参数后点「收藏方案」即可加入对比。",
+             en:"No saved scenarios yet. Set things up above, then hit “Pin scenario” to add one." },
+  pinH1:{ zh:"方案（地区 · 计划）", en:"Scenario (region · program)" }, pinH2:{ zh:"MR 数量", en:"MR points" },
+  pinH3:{ zh:"本区 GT前", en:"Home pre-GT" }, pinH4:{ zh:"最佳 GT后", en:"Best post-GT" }, pinH5:{ zh:"提升", en:"Uplift" },
+  pinClear:{ zh:"清空收藏", en:"Clear all" },
+  pinned:{ zh:"已收藏 ✓", en:"Pinned ✓" }, pinDup:{ zh:"已在收藏里", en:"Already pinned" }, pinNone:{ zh:"先输入积分", en:"Enter points first" },
+  removePin:{ zh:"移除该方案", en:"Remove scenario" },
+
+  // 兑换示例 · 倒推
+  redempTargetHint:{ zh:"点任一档，倒推出各条路线要换它约需多少 MR。", en:"Tap any row to back-calculate how many MR each route needs for it." },
+  rdTarget:{ zh:(award,cost,u)=>`目标：${award} · 约需 ${cost} ${u}`, en:(award,cost,u)=>`Target: ${award} · ~${cost} ${u}` },
+  rdHome:{ zh:(n)=>`本区直兑约需 <b>${n}</b> MR`, en:(n)=>`Home direct: ~<b>${n}</b> MR` },
+  rdHomeNo:{ zh:"本区不支持该计划（只能 GT 后兑）", en:"Home doesn't support this program (GT only)" },
+  rdBest:{ zh:(reg,n)=>`经 ${reg} 搬分约需 <b>${n}</b> MR（含保留 / 奖励）`, en:(reg,n)=>`Via ${reg} GT: ~<b>${n}</b> MR (incl. retain / bonus)` },
+  rdNow:{ zh:(amt,list)=>`你现在 ${amt} MR → 够换的区：${list}`, en:(amt,list)=>`You have ${amt} MR → covers: ${list}` },
+  rdNone:{ zh:"暂无", en:"none" },
+
+  // 变动 / 贬值预警
+  kind_remove:{ zh:"下线", en:"removal" }, kind_deval:{ zh:"贬值", en:"devalue" },
+  kind_suspend:{ zh:"暂停", en:"suspended" }, kind_improve:{ zh:"利好", en:"boost" },
+  alTagSoon:{ zh:(md,k)=>`${md} ${k}`, en:(md,k)=>`${md} ${k}` },
+  alTagPast:{ zh:(k)=>`已${k}`, en:(k)=>`${k} done` },
+  alBanner:{ zh:(note,reg,when)=>`${note}（${reg} · <b>${when}</b>）`, en:(note,reg,when)=>`${note} (${reg} · <b>${when}</b>)` },
+  whenToday:{ zh:"今天", en:"today" }, whenTomorrow:{ zh:"明天", en:"tomorrow" }, whenDays:{ zh:(n)=>`${n} 天后`, en:(n)=>`in ${n} days` },
 };
 
 // 把当前语言套用到静态文案、标题、下拉项与语言按钮
