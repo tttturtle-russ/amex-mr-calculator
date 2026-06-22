@@ -222,6 +222,7 @@
   .rmv{font-family:var(--mono); cursor:pointer; color:var(--muted); border:1px solid var(--border); border-radius:6px; padding:3px 9px; min-height:30px; background:transparent; font-size:12px; transition:.15s}
   .rmv:hover{border-color:var(--down); color:var(--down); background:rgba(224,114,107,.08)}
   td.rmvcell{text-align:right; padding-right:11px}
+  .pintools{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
   /* 贬值 / 变动预警 */
   .alertstrip{display:flex; flex-direction:column; gap:7px; margin:0 0 18px}
   .alertstrip .al{font-family:var(--mono); font-size:12.5px; line-height:1.45; padding:9px 13px; border-radius:10px;
@@ -328,7 +329,11 @@
         <th data-i18n="pinH1">方案（地区 · 计划）</th><th data-i18n="pinH2">MR 数量</th><th data-i18n="pinH3">本区 GT前</th><th data-i18n="pinH4">最佳 GT后</th><th data-i18n="pinH5">提升</th><th></th>
       </tr></thead><tbody id="pinBody"></tbody></table>
     </div>
-    <button class="mini" id="pinClear" type="button" data-i18n="pinClear" style="display:none; margin-top:12px">清空收藏</button>
+    <div class="pintools" id="pinTools" style="display:none">
+      <button class="mini" id="pinCopyMd" type="button" data-i18n="pinCopyMd">复制为 Markdown</button>
+      <button class="mini" id="pinCsv" type="button" data-i18n="pinCsv">下载 CSV</button>
+      <button class="mini" id="pinClear" type="button" data-i18n="pinClear" style="margin-left:auto">清空收藏</button>
+    </div>
   </section>
 
   <!-- 数据 -->
@@ -637,6 +642,8 @@ function initControls(){
   // 方案对比 / 收藏
   $("pinBtn").onclick = doPin;
   $("pinClear").onclick = ()=>{ state.pins=[]; renderPins(); if(_booted) syncPersist(); };
+  $("pinCopyMd").onclick = copyPinsMarkdown;
+  $("pinCsv").onclick = downloadPinsCsv;
   $("pinBody").addEventListener("click", ev=>{
     const b=ev.target.closest("button[data-i]"); if(!b) return;
     state.pins.splice(+b.dataset.i, 1); renderPins(); if(_booted) syncPersist();
@@ -952,7 +959,7 @@ function renderPins(){
   const has=state.pins.length>0;
   $("pinTableWrap").style.display = has? "" : "none";
   $("pinEmpty").style.display = has? "none" : "block";
-  $("pinClear").style.display = has? "" : "none";
+  $("pinTools").style.display = has? "flex" : "none";
   if(!has) return;
   body.innerHTML = state.pins.map((p,i)=>{
     const up = (p.hm!=null && p.hm>0)? Math.round((p.bm/p.hm-1)*100) : null;
@@ -984,6 +991,46 @@ function decodePins(str){
       br:(DATA.regions[f[8]]? f[8] : r), ty:(f[9]==="hotel"?"hotel":"air") });
   }
   return out.slice(0,8);
+}
+// 收藏导出：按当前语言生成表头与各行（Markdown / CSV 共用）
+function pinExportData(){
+  const head=[t("pinH1"), t("pinH2"), t("pinH3"), t("pinH4"), t("pinExBestRegion"), t("pinH5")];
+  const rows=state.pins.map(p=>{
+    const up=(p.hm!=null && p.hm>0)? (p.bm/p.hm-1>=0?"+":"")+Math.round((p.bm/p.hm-1)*100)+"%" : "—";
+    const prog=L(DATA.partners[p.p].name)+(p.b>0?` (+${p.b}%)`:"");
+    return [ p.r+" · "+prog, nf(p.a), p.hm==null? t("notSupported"):nf(p.hm), nf(p.bm), p.br, up ];
+  });
+  return {head, rows};
+}
+function copyText(str, btn, okKey){
+  const done=()=>{ const o=btn.textContent; btn.textContent=t(okKey); setTimeout(()=>{ btn.textContent=o; },1400); };
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(str).then(done,()=>prompt(t("copyPrompt"),str));
+  else prompt(t("copyPrompt"),str);
+}
+function downloadText(filename, text, mime){
+  try{
+    const blob=new Blob([text],{type:mime||"text/plain;charset=utf-8"});
+    const url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url; a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>{ try{URL.revokeObjectURL(url);}catch(e){} },1000);
+  }catch(e){ console.warn("download failed", e); }
+}
+function copyPinsMarkdown(){
+  if(!state.pins.length) return;
+  const {head,rows}=pinExportData();
+  const line=a=>"| "+a.join(" | ")+" |";
+  const md=`**${t("docTitle")}**\n\n`
+    + line(head)+"\n"+line(head.map(()=>"---"))+"\n"
+    + rows.map(line).join("\n")
+    + `\n\n${location.href}\n`;
+  copyText(md, $("pinCopyMd"), "pinCopiedMd");
+}
+function downloadPinsCsv(){
+  if(!state.pins.length) return;
+  const {head,rows}=pinExportData();
+  const esc=v=>{ const s=String(v); return /[",\n]/.test(s)? '"'+s.replace(/"/g,'""')+'"' : s; };
+  const csv="﻿"+[head,...rows].map(r=>r.map(esc).join(",")).join("\r\n");
+  downloadText("amex-mr-pins.csv", csv, "text/csv;charset=utf-8");
 }
 
 /* ============================== 数据面板 ============================== */
@@ -1270,6 +1317,8 @@ const I18N = {
   pinH1:{ zh:"方案（地区 · 计划）", en:"Scenario (region · program)" }, pinH2:{ zh:"MR 数量", en:"MR points" },
   pinH3:{ zh:"本区 GT前", en:"Home pre-GT" }, pinH4:{ zh:"最佳 GT后", en:"Best post-GT" }, pinH5:{ zh:"提升", en:"Uplift" },
   pinClear:{ zh:"清空收藏", en:"Clear all" },
+  pinCopyMd:{ zh:"复制为 Markdown", en:"Copy as Markdown" }, pinCsv:{ zh:"下载 CSV", en:"Download CSV" },
+  pinCopiedMd:{ zh:"已复制 ✓", en:"Copied ✓" }, pinExBestRegion:{ zh:"最佳区", en:"Best region" },
   pinned:{ zh:"已收藏 ✓", en:"Pinned ✓" }, pinDup:{ zh:"已在收藏里", en:"Already pinned" }, pinNone:{ zh:"先输入积分", en:"Enter points first" },
   removePin:{ zh:"移除该方案", en:"Remove scenario" },
 
