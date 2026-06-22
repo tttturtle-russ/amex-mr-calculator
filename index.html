@@ -11,6 +11,12 @@
 <meta name="keywords" content="Amex MR, 美国运通, Membership Rewards, Global Transfer, 跨区转点, 里程计算器, Asia Miles, KrisFlyer, 信用卡里程, 积分兑换">
 <meta name="google-site-verification" content="5DnXXbjr6nWIhwsOm4uHAjZJDOMMnTFoeq3CF9HT1Yo">
 <meta name="theme-color" content="#0e1018">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Amex MR 里程">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%230e1018'/%3E%3Cpath%20d='M5%2016L27%206%2020%2026%2016%2018Z'%20fill='%237fcabb'/%3E%3Ccircle%20cx='16'%20cy='18'%20r='1.7'%20fill='%23e8987a'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Amex MR 跨区里程计算器">
@@ -1375,6 +1381,12 @@ renderFxStatus();
 renderDataAge();
 _booted=true;
 loadFx();
+</script>
+<script>
+/* PWA：注册 Service Worker（离线可用 + 可安装）。失败静默，不影响功能。 */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+}
 </script>
 </body>
 </html>

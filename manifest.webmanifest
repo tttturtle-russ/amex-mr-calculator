@@ -1,0 +1,19 @@
+{
+  "name": "Amex MR 跨区里程计算器",
+  "short_name": "Amex MR 里程",
+  "description": "Amex Membership Rewards 跨区里程计算器：GT 前后各区可兑里程对比、实时汇率折算、兑换示例与方案收藏。",
+  "lang": "zh-Hans",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0e1018",
+  "theme_color": "#0e1018",
+  "categories": ["finance", "travel", "utilities"],
+  "icons": [
+    { "src": "icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },
+    { "src": "icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
+    { "src": "icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }
+  ]
+}
