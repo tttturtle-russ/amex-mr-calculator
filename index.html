@@ -236,6 +236,7 @@
   .alertstrip .al b{color:var(--coral-bright)}
   .tag.past{background:rgba(255,255,255,.04); color:var(--muted); border:1px solid var(--border-soft)}
   /* 兑换示例 · 倒推 */
+  tbody tr.clk:focus-visible{outline:2px solid var(--aqua); outline-offset:-2px}
   tbody tr.rsel{background:rgba(232,152,122,.10)!important}
   tbody tr.rsel td:first-child{box-shadow:inset 3px 0 0 var(--coral)}
   .rd-box{margin-top:12px; padding:13px 15px; border:1px solid var(--border); border-radius:11px;
@@ -663,6 +664,15 @@ function initControls(){
     render();
   });
 
+  // 可点击表格行：键盘 Enter / Space 等同点击
+  const enterActivates = el => el.addEventListener("keydown", ev=>{
+    if(ev.key!=="Enter" && ev.key!==" " && ev.key!=="Spacebar") return;
+    const tr=ev.target.closest("tr[tabindex]"); if(!tr) return;
+    ev.preventDefault(); tr.click();
+  });
+  enterActivates($("redempBody"));
+  enterActivates($("overviewTable").querySelector("tbody"));
+
   buildDataPanel();
 }
 
@@ -814,7 +824,7 @@ function renderOverview(){
     const upTxt = r.uplift==null? `<span class="muted">—</span>`
       : `<span class="${r.uplift>=0?'up':'down'}">${r.uplift>=0?'+':''}${Math.round(r.uplift*100)}%</span>`;
     const bestCell = r.best.isHome? `<span class="muted">${t("homeWord")}</span>` : `<span class="code">${r.best.rk}</span>${rn(r.best.rk)}`;
-    return `<tr class="clk${cur?' best':''}" data-prog="${r.pk}">
+    return `<tr class="clk${cur?' best':''}" data-prog="${r.pk}" tabindex="0" role="button" aria-label="${L(P.name)}">
       <td>${L(P.name)}${P.type==='hotel'?`<span class="tag hotel">${t("tagHotel")}</span>`:''}${cur?`<span class="tag best">${t("tagCurrent")}</span>`:''}</td>
       <td>${r.homeMiles==null?`<span class="muted">${t("notSupported")}</span>`:nf(r.homeMiles)}</td>
       <td><b>${nf(r.best.miles)}</b></td>
@@ -908,7 +918,7 @@ function renderRedemptions(routes, homeRoute, best){
   wrap.style.display=""; empty.style.display="none";
   if(tHint) tHint.style.display="";
   const sel = (state.redempTarget && state.redempTarget.pk===state.program) ? state.redempTarget.i : -1;
-  body.innerHTML = list.map((x,i)=>`<tr class="clk${i===sel?' rsel':''}" data-idx="${i}">
+  body.innerHTML = list.map((x,i)=>`<tr class="clk${i===sel?' rsel':''}" data-idx="${i}" tabindex="0" role="button" aria-pressed="${i===sel?'true':'false'}" aria-label="${L(x.r)} · ${nf(x.m)} ${u}">
       <td>${L(x.r)}<span class="tag ${x.c}">${t("cabin_"+x.c)}</span></td>
       <td>${nf(x.m)}</td>
       <td>${coverCell(homeM, x.m)}</td>
