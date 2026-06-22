@@ -68,6 +68,8 @@
     --aqua:#7fcabb; --aqua-bright:#a4e6d6; --aqua-dim:#5d8c83;
     --coral:#e8987a; --coral-bright:#f4b89c; --coral-dim:#a96b54;
     --up:#7fcabb; --down:#e0726b; --warn:#cfa15f;
+    --heading:#f4f1e9; --th-bg:#121624; --surface:rgba(12,14,22,.5); --scrollbar:#2a3145; --divider-bg:#10131e;
+    --grid-line:rgba(255,255,255,.02);
     --shadow:0 24px 60px -26px rgba(0,0,0,.78);
     --mono:'Space Mono',ui-monospace,Menlo,monospace;
     --serif:'Fraunces','Songti SC','Noto Serif CJK SC',Georgia,serif;
@@ -85,7 +87,7 @@
     background-attachment:fixed;
   }
   body::before{content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
-    background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+    background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
     background-size:48px 48px; mask:radial-gradient(circle at 50% 14%,#000,transparent 78%)}
   body::after{content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.04; mix-blend-mode:overlay;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -99,7 +101,7 @@
   .eyebrow{font-family:var(--mono); text-transform:uppercase; letter-spacing:.26em; font-size:11px; color:var(--aqua);
     display:flex; align-items:center; gap:12px; margin-bottom:14px}
   .eyebrow::before{content:""; width:34px; height:1px; background:linear-gradient(90deg,var(--aqua),transparent)}
-  h1{font-family:var(--serif); font-weight:600; font-size:clamp(30px,6vw,52px); line-height:1.02; letter-spacing:-.01em; margin:0; color:#f4f1e9}
+  h1{font-family:var(--serif); font-weight:600; font-size:clamp(30px,6vw,52px); line-height:1.02; letter-spacing:-.01em; margin:0; color:var(--heading)}
   h1 .ac{color:var(--aqua)}
   .sub{color:var(--ink-dim); font-size:14.5px; max-width:64ch; margin:14px 0 0}
   .rule{height:1px; margin-top:20px; background:linear-gradient(90deg,rgba(127,202,187,.5),rgba(232,152,122,.22) 38%,transparent)}
@@ -110,7 +112,7 @@
     margin-bottom:18px; box-shadow:var(--shadow); backdrop-filter:blur(8px)}
   .card::before{content:""; position:absolute; inset:0 0 auto 0; height:1px; border-radius:16px 16px 0 0;
     background:linear-gradient(90deg,transparent,rgba(127,202,187,.5),transparent)}
-  .card h2{font-family:var(--serif); font-weight:600; font-size:19px; margin:0 0 18px; display:flex; align-items:center; gap:11px; color:#f1eee6}
+  .card h2{font-family:var(--serif); font-weight:600; font-size:19px; margin:0 0 18px; display:flex; align-items:center; gap:11px; color:var(--heading)}
   .card h2 .n{font-family:var(--mono); font-size:12px; color:var(--aqua); border:1px solid var(--aqua-dim); border-radius:7px;
     width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; background:rgba(127,202,187,.05)}
 
@@ -157,14 +159,14 @@
   .filterbar label.fld{font-size:11px}
   .filterbar select{width:auto; min-width:170px; font-size:13px}
 
-  .tbl-scroll{overflow:auto; max-height:560px; border:1px solid var(--border); border-radius:12px; background:rgba(12,14,22,.5)}
+  .tbl-scroll{overflow:auto; max-height:560px; border:1px solid var(--border); border-radius:12px; background:var(--surface)}
   .tbl-scroll::-webkit-scrollbar{width:10px; height:10px}
-  .tbl-scroll::-webkit-scrollbar-thumb{background:#2a3145; border-radius:8px; border:2px solid transparent; background-clip:padding-box}
+  .tbl-scroll::-webkit-scrollbar-thumb{background:var(--scrollbar); border-radius:8px; border:2px solid transparent; background-clip:padding-box}
   .tbl-scroll::-webkit-scrollbar-thumb:hover{background:var(--aqua-dim)}
   table{width:100%; border-collapse:collapse; font-size:13.5px}
   th,td{padding:11px 13px; text-align:right; border-bottom:1px solid var(--border-soft); white-space:nowrap}
   th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
-  thead th{position:sticky; top:0; z-index:2; background:#121624; color:var(--aqua-dim); font-family:var(--mono);
+  thead th{position:sticky; top:0; z-index:2; background:var(--th-bg); color:var(--aqua-dim); font-family:var(--mono);
     font-weight:400; text-transform:uppercase; letter-spacing:.1em; font-size:10.5px; border-bottom:1px solid var(--border)}
   tbody td{font-family:var(--mono); color:var(--ink-dim)}
   tbody td:nth-child(2){font-family:var(--cjk)}
@@ -176,7 +178,7 @@
   tr.best td{border-bottom-color:rgba(232,152,122,.22)}
   tr.best td:first-child{box-shadow:inset 3px 0 0 var(--coral)}
   tr.best td b{color:var(--coral-bright)}
-  tr.divider td{background:#10131e; color:var(--muted); font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-align:left; text-transform:uppercase}
+  tr.divider td{background:var(--divider-bg); color:var(--muted); font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-align:left; text-transform:uppercase}
   .code{font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.05em; color:var(--aqua);
     border:1px solid var(--border); border-radius:5px; padding:1px 6px; margin-right:8px; background:rgba(127,202,187,.05)}
   .tag{display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em; padding:1px 7px;
@@ -244,12 +246,39 @@
   .rd-box .rd-t{font-weight:600; color:var(--ink); margin-bottom:5px; font-family:var(--cjk)}
   .rd-box b{color:var(--aqua-bright); font-family:var(--mono)}
   .rd-box .code{margin-right:4px}
+
+  /* ============== 浅色主题（深色为默认；切到浅色覆盖变量与少数硬编码面） ============== */
+  :root[data-theme="light"]{
+    --bg:#f4f2ec; --panel:rgba(255,255,255,.70); --panel-solid:#ffffff;
+    --border:#d9d3c4; --border-soft:#e7e2d5; --field:#ffffff;
+    --ink:#272a30; --ink-dim:#525660; --muted:#6b6f79;
+    --aqua:#157f6a; --aqua-bright:#0c735e; --aqua-dim:#23685a;
+    --coral:#cf6c45; --coral-bright:#ad4f2a; --coral-dim:#955334;
+    --up:#1a7a4d; --down:#c33930; --warn:#856518;
+    --heading:#20222a; --th-bg:#efece3; --surface:#fbfaf6; --scrollbar:#cfc8b8; --divider-bg:#eeebe1;
+    --grid-line:rgba(0,0,0,.035);
+    --shadow:0 18px 44px -24px rgba(72,64,44,.30);
+  }
+  [data-theme="light"] body{
+    background:
+      radial-gradient(940px 520px at 8% -10%, rgba(127,202,187,.22), transparent 60%),
+      radial-gradient(820px 600px at 102% -6%, rgba(232,152,122,.18), transparent 55%),
+      linear-gradient(180deg,#f6f4ed,#f1efe6 55%,#ece9de);
+    background-attachment:fixed;
+  }
+  [data-theme="light"] .headline{
+    background:radial-gradient(120% 140% at 0% 0%,rgba(127,202,187,.20),transparent 55%),linear-gradient(180deg,#ffffff,#f9f7f0)}
+  [data-theme="light"] .big{text-shadow:none}
+  [data-theme="light"] details.sub{background:rgba(0,0,0,.022)}
+  [data-theme="light"] .seg button:hover:not(.on){background:rgba(0,0,0,.04)}
+  [data-theme="light"] .tag.hotel{background:rgba(0,0,0,.05)}
+  [data-theme="light"] .tag.past{background:rgba(0,0,0,.045)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top reveal" style="--d:.02s">
-    <div class="eyebrow"><span data-i18n="eyebrow">Membership Rewards · 跨区里程终端</span><button class="mini" id="langBtn" type="button" style="margin-left:auto">EN</button></div>
+    <div class="eyebrow"><span data-i18n="eyebrow">Membership Rewards · 跨区里程终端</span><button class="mini" id="themeBtn" type="button" style="margin-left:auto" aria-label="切换深/浅色">☀</button><button class="mini" id="langBtn" type="button">EN</button></div>
     <h1 data-i18n-html="h1">Amex MR <span class="ac">里程换算计算器</span></h1>
     <p class="sub" data-i18n="sub">各区可兑里程 · GT（Global Transfer）前后对比 · 实时汇率折算</p>
     <div class="rule"></div>
@@ -534,7 +563,7 @@ const REDEMPTIONS = {
 
 /* ============================== 状态 ============================== */
 const state = {
-  lang:"zh",
+  lang:"zh", theme:"dark",
   region:"HK", tier:"charge", amount:100000, program:"asiamiles", convModel:"cap",
   ovType:"all", ovSort:{key:"uplift", dir:"desc"},
   bonus:{}, retainOverride:{}, pins:[], redempTarget:null,
@@ -633,6 +662,7 @@ function initControls(){
   $("bonus").oninput    = e=>{ const v=Math.max(0,+e.target.value||0); if(v>0) state.bonus[state.program]=v; else delete state.bonus[state.program]; render(); };
   $("shareBtn").onclick = doShare;
   $("langBtn").onclick  = ()=> setLang(state.lang==="zh"?"en":"zh");
+  $("themeBtn").onclick = ()=> setTheme(state.theme==="light"?"dark":"light");
   $("fxRefresh").onclick = loadFx;
 
   // 总览表点击切换计划
@@ -1121,7 +1151,7 @@ function renderFxStatus(){
 }
 
 /* ===================== 状态持久化 / 分享链接 ===================== */
-const LS_STATE="amex-mr-state", LS_FX="amex-mr-fx";
+const LS_STATE="amex-mr-state", LS_FX="amex-mr-fx", LS_THEME="amex-mr-theme";
 let _booted=false;
 
 function snapshot(){
@@ -1351,6 +1381,7 @@ const I18N = {
   pinCopiedMd:{ zh:"已复制 ✓", en:"Copied ✓" }, pinExBestRegion:{ zh:"最佳区", en:"Best region" },
   pinned:{ zh:"已收藏 ✓", en:"Pinned ✓" }, pinDup:{ zh:"已在收藏里", en:"Already pinned" }, pinNone:{ zh:"先输入积分", en:"Enter points first" },
   removePin:{ zh:"移除该方案", en:"Remove scenario" },
+  themeToggle:{ zh:"切换深色 / 浅色", en:"Toggle dark / light" },
 
   // 兑换示例 · 倒推
   redempTargetHint:{ zh:"点任一档，倒推出各条路线要换它约需多少 MR。", en:"Tap any row to back-calculate how many MR each route needs for it." },
@@ -1382,6 +1413,8 @@ function applyI18n(){
     lb.setAttribute("aria-label", state.lang==="zh" ? "Switch to English" : "切换到中文");
     lb.setAttribute("title", state.lang==="zh" ? "Switch to English" : "切换到中文");
   }
+  const tb=$("themeBtn");
+  if(tb){ tb.setAttribute("aria-label", t("themeToggle")); tb.setAttribute("title", t("themeToggle")); }
   fillSelects();
 }
 function setLang(l){
@@ -1394,11 +1427,34 @@ function setLang(l){
   if(_booted) syncPersist();
 }
 
+/* ============================== 深 / 浅色主题 ============================== */
+// 主题是设备偏好：存本地、不进分享链接；首访跟随系统 prefers-color-scheme
+function restoreTheme(){
+  let th=null; try{ th=localStorage.getItem(LS_THEME); }catch(e){}
+  if(th!=="light" && th!=="dark"){
+    th = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark";
+  }
+  state.theme = th;
+}
+function applyTheme(){
+  const light = state.theme==="light";
+  if(light) document.documentElement.setAttribute("data-theme","light");
+  else document.documentElement.removeAttribute("data-theme");
+  const tb=$("themeBtn");
+  if(tb){ tb.textContent = light ? "☾" : "☀"; tb.setAttribute("aria-label", t("themeToggle")); tb.setAttribute("title", t("themeToggle")); }
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute("content", light ? "#f4f2ec" : "#0e1018");
+  try{ localStorage.setItem(LS_THEME, state.theme); }catch(e){}
+}
+function setTheme(th){ state.theme = th==="light" ? "light" : "dark"; applyTheme(); }
+
 /* ============================== 启动 ============================== */
 validateData();
 restoreState();
+restoreTheme();
 restoreFx();
 initControls();
+applyTheme();
 applyI18n();
 render();
 renderFxStatus();
