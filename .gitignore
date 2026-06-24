@@ -10,3 +10,6 @@
 
 # IndexNow 本地密钥留存
 .indexnow-key
+
+# Playwright MCP 截图/快照临时产物
+.playwright-mcp/

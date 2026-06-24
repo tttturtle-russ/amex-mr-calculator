@@ -32,14 +32,14 @@
 - **中英双语**一键切换；**深色 / 浅色主题**一键切换（首访跟随系统、记住偏好，浅色配色全部通过 WCAG AA 对比度）；
 - 免费、无需登录、无广告、无追踪，纯静态单页，手机可用。
 
-覆盖 **9 个地区**（香港、美国、英国、新加坡、澳洲、加拿大、日本、印度、台湾）和约 **28 个航空/酒店伙伴**，比例数据于 2026 年 6 月**联网核对**官方 Amex 各区页面与权威里程博客（pointhacks / headforpoints / milelion / frequentmiler / 各区官方页）。
+覆盖 **9 个发卡地区**（香港、美国、英国、新加坡、澳洲、加拿大、日本、印度、台湾）和约 **28 个航空/酒店伙伴**。其中**日本 / 印度 / 台湾仅作发卡地与 GT 源、不作 GT 转入目的地**——经联网核对，把分 GT *转入*这三地的账户在现实中不可行（印度 MR 条款明确禁止积分转入/合并，日本、台湾也只有「转出至美国」的真实先例、转入既无案例又折损），故它们只在被选为发卡地时显示本地直兑与「转出至美/英等区」，不会作为他区用户的 GT 转入目的地出现。比例数据于 2026 年 6 月**联网核对**官方 Amex 各区页面与权威里程博客（pointhacks / headforpoints / milelion / frequentmiler / 各区官方页）。
 
 > [!IMPORTANT]
 > **跨区数字是汇率估算，不是 Amex 官方公式。** Amex 从未公布跨区换算规则；本工具按两地货币实时汇率近似，并明确标注。Global Card Transfer 是「移居 / 搬家」功能——电话办理、约一年一次、按汇率折算、并非 1:1，更不是免费套利。工具刻意**不替你判断「哪个最划算」、也不做金钱估值**，只客观列出所有路线，由你自己决定。最终请以 American Express 为准。
 
 ## What it does (English)
 
-Pick your card's **issuing region** (HK / US / UK / SG / AU / CA / JP / IN / TW), enter an MR amount, and the tool lists — for ~27 airline & hotel transfer partners (Asia Miles, KrisFlyer, Avios, Aeroplan, ANA, Flying Blue, Marriott, Hilton, …) — how many miles/points you'd get in **each region**, comparing **redeeming at home (pre-GT)** vs. **after a cross-region Global Card Transfer (post-GT)**.
+Pick your card's **issuing region** (HK / US / UK / SG / AU / CA / JP / IN / TW), enter an MR amount, and the tool lists — for ~27 airline & hotel transfer partners (Asia Miles, KrisFlyer, Avios, Aeroplan, ANA, Flying Blue, Marriott, Hilton, …) — how many miles/points you'd get in **each region**, comparing **redeeming at home (pre-GT)** vs. **after a cross-region Global Card Transfer (post-GT)**. **Japan, India and Taiwan are home/GT-source only** — verified research shows you can't realistically transfer points *into* those accounts (India's MR terms forbid combining/receiving points; Japan and Taiwan only have transfer-*out*-to-US precedent), so they appear only when selected as your home region (showing home redemptions and GT-out to US/UK/etc.), never as a transfer-in destination for other regions.
 
 A **redemption-examples** panel grounds the abstract numbers in real awards (e.g. "HKG→Tokyo business one-way, 30,000"), showing with ✓ / ×N / a percentage whether your pre-GT and best post-GT results cover each award; tap a row to **back-calculate** how many MR each route needs for it and which regions your balance already covers — listed, never valued. A **pin & compare** panel lets you stick several region / program / amount scenarios side by side; pins are encoded into the share link so a whole comparison can be shared. **Devaluation / change alerts** flag upcoming partner removals and ratio devaluations with a countdown ("in X days") on the affected region and row.
 

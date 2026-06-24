@@ -451,17 +451,17 @@ const DATA = {
       note:{zh:"多数 1:1；法荷航 2026/1 升回 1:1。国泰/达美 4:3(0.75)。万豪 5:6(1.2)、希尔顿 1:1。阿提哈德已于 2026/6/20 下线。旧卡 “MR Select” 不能转航空。",
             en:"Most 1:1; Flying Blue back to 1:1 since 2026/1. Cathay/Delta 4:3 (0.75). Marriott 5:6 (1.2), Hilton 1:1. Etihad left on 2026/6/20. Legacy “MR Select” can't transfer to airlines."},
       transfers:{ aeroplan:1.0, flyingblue:1.0, ba_avios:1.0, asiamiles:0.75, delta:0.75, marriott:1.2, hilton:1.0 } },
-    JP:{ name:{zh:"日本 🇯🇵",en:"Japan 🇯🇵"}, cap:{partner:"ana",maxMiles:40000},
-      note:{zh:"伙伴较多。ANA 1:1（需「MR ANA 程序」年费 ¥5,500、每自然年封顶 40,000 里程，白金卡免年费）；JAL 现已是伙伴（约 0.4）；其余航空多为 0.8（需登记 MR Plus，年费 ¥3,300，Gold Preferred/白金免）。酒店：万豪≈0.99、希尔顿 1.25。比例以官方为准。",
-            en:"Many partners. ANA 1:1 (needs the “MR ANA Program”, ¥5,500/yr, capped 40,000 mi/calendar year; waived on Platinum); JAL is now a partner (~0.4); other airlines are mostly 0.8 (needs MR Plus enrollment, ¥3,300/yr, waived on Gold Preferred/Platinum). Hotels: Marriott ≈0.99, Hilton 1.25. Confirm ratios officially."},
+    JP:{ name:{zh:"日本 🇯🇵",en:"Japan 🇯🇵"}, cap:{partner:"ana",maxMiles:40000}, gtDest:false,
+      note:{zh:"【仅作发卡地 / GT 源，不作 GT 转入目的地】把他区分 GT 转入日本 MR 账户缺乏可行先例（日本 MR 自成体系、需移居办本地卡），且 ANA 1:1 用美国 MR 即可直接实现——故不列为转入目的地；持日本卡者可在此看本地直兑或转出至美/英等区。伙伴较多。ANA 1:1（需「MR ANA 程序」年费 ¥5,500、每自然年封顶 40,000 里程，白金卡免年费）；JAL 现已是伙伴（约 0.4）；其余航空多为 0.8（需登记 MR Plus，年费 ¥3,300，Gold Preferred/白金免）。酒店：万豪≈0.99、希尔顿 1.25。比例以官方为准。",
+            en:"[Home / GT-source only — not a transfer-in destination] Moving points INTO a Japan MR account has no workable precedent (Japan MR is siloed; needs relocating for a local card), and ANA 1:1 is reachable directly from US MR — so it isn’t listed as a destination; Japan cardholders can still see home redemptions or GT out to US/UK etc. Many partners. ANA 1:1 (needs the “MR ANA Program”, ¥5,500/yr, capped 40,000 mi/calendar year; waived on Platinum); JAL is now a partner (~0.4); other airlines are mostly 0.8 (needs MR Plus enrollment, ¥3,300/yr, waived on Gold Preferred/Platinum). Hotels: Marriott ≈0.99, Hilton 1.25. Confirm ratios officially."},
       transfers:{ ana:1.0, jal:0.4, asiamiles:0.8, krisflyer:0.8, ba_avios:0.8, qatar_avios:0.8, flyingblue:0.8, delta:0.8, qantas:0.8, emirates:0.8, virginatlantic:0.8, thai:0.8, sas:0.8, marriott:0.99, hilton:1.25 } },
-    IN:{ name:{zh:"印度 🇮🇳",en:"India 🇮🇳"},
-      note:{zh:"航空多为 2:1(0.5)，万豪 1:1（常有 30–50% 转点奖励）。印度卡核心价值多在里程券模式。",
-            en:"Airlines mostly 2:1 (0.5); Marriott 1:1 (often with a 30–50% transfer bonus). On Indian cards the core value is usually in mileage vouchers."},
+    IN:{ name:{zh:"印度 🇮🇳",en:"India 🇮🇳"}, gtDest:false,
+      note:{zh:"【仅作发卡地 / GT 源，不作 GT 转入目的地】Amex 印度 MR 条款明确禁止积分转入或合并到印度账户（实测 India→美国 可转出、India→加拿大 已被拒），故不列为转入目的地；持印度卡者可在此看本地直兑或转出至美/英等区。航空多为 2:1(0.5)，万豪 1:1（常有 30–50% 转点奖励）。印度卡核心价值多在里程券模式。",
+            en:"[Home / GT-source only — not a transfer-in destination] Amex India’s MR terms explicitly bar combining/transferring points INTO an India account (India→US out works; India→Canada was declined) — so it isn’t listed as a destination; India cardholders can still see home redemptions or GT out to US/UK etc. Airlines mostly 2:1 (0.5); Marriott 1:1 (often with a 30–50% transfer bonus). On Indian cards the core value is usually in mileage vouchers."},
       transfers:{ krisflyer:0.5, emirates:0.5, etihad:0.5, ba_avios:0.5, qatar_avios:0.5, asiamiles:0.5, virginatlantic:0.5, marriott:1.0 } },
-    TW:{ name:{zh:"台湾 🇹🇼",en:"Taiwan 🇹🇼"},
-      note:{zh:"多数航空 1:1（国泰 Asia Miles 台湾仍 1:1，兑换期至 2026/12/31；2026/3 的国泰 5:4 贬值只发生在美国）。万豪 10:9(0.9)、希尔顿 4:5(1.25)。转点约需 2–3 周。",
-            en:"Most airlines 1:1 (Cathay Asia Miles is still 1:1 in Taiwan, valid to 2026/12/31; the 2026/3 Cathay 5:4 devaluation was US-only). Marriott 10:9 (0.9), Hilton 4:5 (1.25). Transfers take about 2–3 weeks."},
+    TW:{ name:{zh:"台湾 🇹🇼",en:"Taiwan 🇹🇼"}, gtDest:false,
+      note:{zh:"【仅作发卡地 / GT 源，不作 GT 转入目的地】实际仅有「台湾→美国」转出先例，把分转入台湾账户既无案例、又因 TWD 偏弱而折损不划算，故不列为转入目的地；持台湾卡者可在此看本地直兑或转出至美/英等区。多数航空 1:1（国泰 Asia Miles 台湾仍 1:1，兑换期至 2026/12/31；2026/3 的国泰 5:4 贬值只发生在美国）。万豪 10:9(0.9)、希尔顿 4:5(1.25)。转点约需 2–3 周。",
+            en:"[Home / GT-source only — not a transfer-in destination] Only Taiwan→US transfers OUT are documented; moving points into a Taiwan account is unattested and value-losing (weak TWD) — so it isn’t listed as a destination; Taiwan cardholders can still see home redemptions or GT out to US/UK etc. Most airlines 1:1 (Cathay Asia Miles is still 1:1 in Taiwan, valid to 2026/12/31; the 2026/3 Cathay 5:4 devaluation was US-only). Marriott 10:9 (0.9), Hilton 4:5 (1.25). Transfers take about 2–3 weeks."},
       transfers:{ asiamiles:1.0, krisflyer:1.0, evaair:1.0, thai:1.0, malaysia:1.0, marriott:0.9, hilton:1.25 } },
   },
   lastVerified:"2026-06",
@@ -621,6 +621,7 @@ function programRoutes(pk){
   const home=state.region, out=[], bf=bonusOf(pk)/100;   // bf = 转点奖励比例
   for(const rk in DATA.regions){
     const isHome = rk===home;
+    if(!isHome && DATA.regions[rk].gtDest===false) continue;   // 该区不可作 GT 转入目的地（仅发卡地/GT 源，如 JP/IN/TW）
     const tier = isHome ? state.tier : defTier(rk);
     const ratio = ratioOf(DATA.regions[rk].transfers[pk], tier);
     if(ratio==null) continue;
@@ -1112,7 +1113,7 @@ function renderFxGrid(){
 // GT 保留比例网格：默认显示汇率估算，可手动覆盖（按 本区→目的区 记）
 function renderRetainGrid(){
   const grid=$("retainGrid"); if(!grid) return;
-  const home=state.region, dests=Object.keys(DATA.regions).filter(rk=>rk!==home);
+  const home=state.region, dests=Object.keys(DATA.regions).filter(rk=>rk!==home && DATA.regions[rk].gtDest!==false);
   grid.innerHTML = dests.map(rk=>{
     const key=home+"_"+rk, ov=state.retainOverride[key], val=(ov!=null?ov:retain(home,rk));
     return `<div><span class="code">${rk}</span>${rn(rk)}</div>`
