@@ -56,6 +56,17 @@ for (const r of DATA.recheck || []) {
   ok(isBilingual(r.what), `recheck ${r.date}: what 不是双语`);
 }
 
+// --- regionSrc 数据溯源（可选字段；存在则校验结构） ---
+for (const [rk, s] of Object.entries(DATA.regionSrc || {})) {
+  ok(DATA.regions[rk], `regionSrc: 未知 region ${rk}`);
+  ok(/^\d{4}-\d{2}$/.test(s.verified), `regionSrc ${rk}: verified 非法 (${s.verified})`);
+  ok(Array.isArray(s.links), `regionSrc ${rk}: links 不是数组`);
+  (s.links || []).forEach((l, i) => {
+    ok(isBilingual(l.label), `regionSrc ${rk}.links[${i}]: label 不是双语`);
+    ok(typeof l.url === "string" && /^https?:\/\//.test(l.url), `regionSrc ${rk}.links[${i}]: url 非法 (${l.url})`);
+  });
+}
+
 // --- redemptions ---
 for (const [pk, list] of Object.entries(REDEMPTIONS)) {
   ok(DATA.partners[pk], `redemptions: 未知 partner ${pk}`);

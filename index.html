@@ -273,6 +273,21 @@
   [data-theme="light"] .seg button:hover:not(.on){background:rgba(0,0,0,.04)}
   [data-theme="light"] .tag.hotel{background:rgba(0,0,0,.05)}
   [data-theme="light"] .tag.past{background:rgba(0,0,0,.045)}
+
+  /* 数据溯源浮层 · ⓘ 点 + popover */
+  .srcdot{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; margin-left:6px;
+    border-radius:50%; border:1px solid var(--border); color:var(--muted); font-size:10px; font-family:var(--mono);
+    cursor:pointer; vertical-align:middle; background:transparent; transition:.15s; line-height:1; padding:0}
+  .srcdot:hover, .srcdot.on{border-color:var(--aqua); color:var(--aqua-bright); background:rgba(127,202,187,.12)}
+  .srcpop{position:fixed; z-index:9999; max-width:290px; background:var(--panel-solid); border:1px solid var(--border);
+    border-radius:11px; box-shadow:var(--shadow); padding:11px 14px; font-size:12.5px; line-height:1.5; color:var(--ink-dim); display:none}
+  .srcpop.show{display:block}
+  .srcpop .sp-v{font-family:var(--mono); color:var(--muted); font-size:11.5px; margin-bottom:8px}
+  .srcpop .sp-v b{color:var(--ink)}
+  .srcpop a{display:block; color:var(--aqua-bright); text-decoration:none; padding:4px 0; border-top:1px solid var(--border-soft)}
+  .srcpop a:first-of-type{border-top:none}
+  .srcpop a:hover{text-decoration:underline}
+  .srcpop .sp-none{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -492,6 +507,46 @@ const DATA = {
     [{zh:"AU/CA/JP/IN/TW 比例",en:"AU/CA/JP/IN/TW ratios"},{zh:"pointhacks.com.au、frugalflyer.ca、ana.co.jp、cardtrail.in、jazztalk.tw",en:"pointhacks.com.au, frugalflyer.ca, ana.co.jp, cardtrail.in, jazztalk.tw"}],
     [{zh:"实时汇率 API",en:"Live FX API"},{zh:"open.er-api.com（免费、无需密钥）",en:"open.er-api.com (free, no key)"}],
   ],
+  // 数据溯源：每区最后人工核对月份 + 可点来源。verified 缺省回退全局 lastVerified。
+  // links[].url 为长期稳定的官方/权威页面(非深链)；拿不准的宁可不列。
+  regionSrc:{
+    HK:{ verified:"2026-07", links:[
+      {label:{zh:"Amex 香港 · 会员奖赏",en:"Amex HK · Membership Rewards"}, url:"https://www.americanexpress.com/en-hk/rewards/membership-rewards/"},
+    ]},
+    US:{ verified:"2026-07", links:[
+      {label:{zh:"Amex 美国 · 转点伙伴",en:"Amex US · Transfer partners"}, url:"https://www.americanexpress.com/en-us/benefits/rewards/transfer-points-to-a-partner/"},
+      {label:{zh:"Upgraded Points · MR 转点指南",en:"Upgraded Points · MR transfer guide"}, url:"https://upgradedpoints.com/"},
+      {label:{zh:"Frequent Miler",en:"Frequent Miler"}, url:"https://frequentmiler.com/"},
+    ]},
+    UK:{ verified:"2026-07", links:[
+      {label:{zh:"Amex 英国 · 会员奖赏",en:"Amex UK · Membership Rewards"}, url:"https://www.americanexpress.com/en-gb/rewards/membership-rewards/"},
+      {label:{zh:"Head for Points",en:"Head for Points"}, url:"https://www.headforpoints.com/"},
+    ]},
+    SG:{ verified:"2026-07", links:[
+      {label:{zh:"Amex 新加坡 · 会员奖赏",en:"Amex SG · Membership Rewards"}, url:"https://www.americanexpress.com/en-sg/rewards/membership-rewards/"},
+      {label:{zh:"The MileLion",en:"The MileLion"}, url:"https://milelion.com/"},
+      {label:{zh:"Mainly Miles",en:"Mainly Miles"}, url:"https://mainlymiles.com/"},
+    ]},
+    AU:{ verified:"2026-07", links:[
+      {label:{zh:"Amex 澳大利亚 · 会员奖赏",en:"Amex AU · Membership Rewards"}, url:"https://www.americanexpress.com/en-au/rewards/membership-rewards/"},
+      {label:{zh:"Point Hacks",en:"Point Hacks"}, url:"https://www.pointhacks.com.au/"},
+    ]},
+    CA:{ verified:"2026-07", links:[
+      {label:{zh:"Amex 加拿大 · 奖赏",en:"Amex CA · Rewards"}, url:"https://www.americanexpress.com/en-ca/rewards/"},
+      {label:{zh:"Prince of Travel",en:"Prince of Travel"}, url:"https://princeoftravel.com/"},
+      {label:{zh:"Frugal Flyer",en:"Frugal Flyer"}, url:"https://frugalflyer.ca/"},
+    ]},
+    JP:{ verified:"2026-07", links:[
+      {label:{zh:"Amex 日本",en:"Amex Japan"}, url:"https://www.americanexpress.com/ja-jp/"},
+      {label:{zh:"ANA Mileage Club",en:"ANA Mileage Club"}, url:"https://www.ana.co.jp/"},
+    ]},
+    IN:{ verified:"2026-07", links:[
+      {label:{zh:"Amex 印度",en:"Amex India"}, url:"https://www.americanexpress.com/en-in/"},
+    ]},
+    TW:{ verified:"2026-07", links:[
+      {label:{zh:"Amex 台湾",en:"Amex Taiwan"}, url:"https://www.americanexpress.com/zh-tw/"},
+    ]},
+  },
 };
 
 /* ============================================================
@@ -617,6 +672,12 @@ function feeUSDStr(rk){
   return " ≈ $" + (usd<10 ? usd.toFixed(1) : Math.round(usd));
 }
 
+// 数据溯源：该区最后核对月（缺省回退全局 lastVerified）
+const srcVerifiedOf = rk => (DATA.regionSrc && DATA.regionSrc[rk] && DATA.regionSrc[rk].verified) || DATA.lastVerified;
+const srcLinksOf    = rk => (DATA.regionSrc && DATA.regionSrc[rk] && DATA.regionSrc[rk].links) || [];
+// 地区名旁的 ⓘ 溯源点：hover(桌面)/点击(移动) 弹出核对日期 + 可点来源
+const srcDot = rk => `<button type="button" class="srcdot" data-src="${rk}" aria-label="${t("srcAria")}" title="${t("srcAria")}">i</button>`;
+
 // 给定计划，算每个区可兑里程（本区=GT前；他区=GT后，按 retain 折算）
 function programRoutes(pk){
   const home=state.region, out=[], bf=bonusOf(pk)/100;   // bf = 转点奖励比例
@@ -719,7 +780,64 @@ function initControls(){
   enterActivates($("redempBody"));
   enterActivates($("overviewTable").querySelector("tbody"));
 
+  initSrcPopover();
   buildDataPanel();
+}
+
+// 数据溯源浮层：桌面 hover、移动/键盘点击；单例浮层挂 body，随 ⓘ 定位
+function initSrcPopover(){
+  const pop = document.createElement("div");
+  pop.className = "srcpop"; pop.id = "srcPop";
+  document.body.appendChild(pop);
+  let curDot = null;
+
+  const build = rk => {
+    const links = srcLinksOf(rk);
+    const head = `<div class="sp-v">${t("srcVerified", srcVerifiedOf(rk))}</div>`;
+    const body = links.length
+      ? links.map(l=>`<a href="${l.url}" target="_blank" rel="noopener noreferrer">${L(l.label)} ↗</a>`).join("")
+      : `<div class="sp-none">${t("srcNoLinks")}</div>`;
+    return head + body;
+  };
+  const place = dot => {
+    const r = dot.getBoundingClientRect();
+    pop.style.visibility = "hidden"; pop.classList.add("show");
+    const pw = pop.offsetWidth, ph = pop.offsetHeight;
+    let left = r.left, top = r.bottom + 6;
+    if(left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+    if(left < 8) left = 8;
+    if(top + ph > window.innerHeight - 8) top = r.top - ph - 6;   // 下方放不下→放上方
+    pop.style.left = left + "px"; pop.style.top = Math.max(8, top) + "px";
+    pop.style.visibility = "";
+  };
+  const open = dot => {
+    curDot = dot; pop.innerHTML = build(dot.dataset.src);
+    dot.classList.add("on"); place(dot);
+  };
+  const close = () => {
+    if(curDot) curDot.classList.remove("on");
+    curDot = null; pop.classList.remove("show");
+  };
+
+  const tbody = $("focusTable").querySelector("tbody");
+  // 桌面 hover
+  tbody.addEventListener("mouseover", ev=>{ const d=ev.target.closest(".srcdot"); if(d) open(d); });
+  tbody.addEventListener("mouseout", ev=>{
+    const d=ev.target.closest(".srcdot"); if(!d) return;
+    if(ev.relatedTarget && (ev.relatedTarget===pop || pop.contains(ev.relatedTarget))) return;
+    close();
+  });
+  pop.addEventListener("mouseleave", close);
+  // 移动/键盘：点击切换
+  tbody.addEventListener("click", ev=>{
+    const d=ev.target.closest(".srcdot"); if(!d) return;
+    ev.preventDefault(); ev.stopPropagation();
+    (curDot===d) ? close() : open(d);
+  });
+  // 点击别处 / Esc 关闭
+  document.addEventListener("click", ev=>{ if(!ev.target.closest(".srcdot") && !ev.target.closest("#srcPop")) close(); });
+  document.addEventListener("keydown", ev=>{ if(ev.key==="Escape") close(); });
+  window.addEventListener("scroll", close, true);
 }
 
 /* ============================== 渲染 ============================== */
@@ -815,7 +933,7 @@ function renderFocus(routes, homeRoute, best){
       + (x===best && !x.isHome ?`<span class="tag best">${t("tagMost")}</span>`:'');
     const mrTxt = x.isHome ? `<span class="muted">${nf(x.mr)}<span class="small">${t("rawSuffix")}</span></span>` : nf(x.mr);
     return `<tr class="${x===best && !x.isHome?'best':''}">
-      <td><span class="code">${x.rk}</span>${rn(x.rk)}${tags}${notes}</td>
+      <td><span class="code">${x.rk}</span>${rn(x.rk)}${srcDot(x.rk)}${tags}${notes}</td>
       <td>${keepTxt}</td>
       <td>${mrTxt}</td>
       <td><b>${nf(x.miles)}</b></td>
@@ -1357,6 +1475,9 @@ const I18N = {
               en:(ym,n)=>`Data checked · ${ym}`+(n>=6?` · ~${n} months since last update, please verify`:"") },
   sourcesNote:{ zh:"跨区 GT 按汇率折算为近似，Amex 未公开官方公式，最终须致电确认。手续费为现金费、不抵扣里程。",
                 en:"Cross-region GT is an FX-based approximation; Amex publishes no official formula, so confirm by phone. Fees are cash charges and don't reduce miles." },
+  srcAria:{ zh:"数据来源与核对日期", en:"Data source & verification date" },
+  srcVerified:{ zh:ym=>`本区数据核对 · ${ym}`, en:ym=>`Region data checked · ${ym}` },
+  srcNoLinks:{ zh:"暂无可点来源链接。", en:"No source links available." },
 
   card3r:{ zh:"这笔里程能换什么 · 兑换示例", en:"What can these miles get · Redemption examples" },
   redempHint:{ zh:"下面是该计划常见的兑换档位（多为单程，里程数以航司官方奖励表为准，常随舱位 / 航线 / 季节浮动）。✓ 表示当前结果够换、×N 表示约可换几次，百分比表示离够还差多少。只列举、不估值。",
